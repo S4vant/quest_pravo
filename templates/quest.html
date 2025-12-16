@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Квест: Трудовое право</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="game">
+
+  <!-- ФОРМА -->
+  <div id="player-form" class="card">
+      <h2>Вход в квест</h2>
+
+      <input id="name" placeholder="ФИО">
+      <input id="email" placeholder="Email">
+      <button onclick="loadProfile()">Продолжить</button>
+
+      <p id="form-error"></p>
+  </div>
+
+  <!-- ПРОФИЛЬ -->
+  <div id="profile" class="card" style="display:none;">
+      <h2>Профиль</h2>
+      <p><b id="p-name"></b></p>
+      <p id="p-email"></p>
+
+      <div id="attempts"></div>
+      <button id="start-btn" onclick="startAttempt()">Начать квест</button>
+  </div>
+
+  <!-- ИГРА -->
+  <div id="stage-container" style="display:none;">
+      <h2 id="title"></h2>
+      <p id="text"></p>
+      <div id="actions"></div>
+  </div>
+
+</div>
+
+<script src="/static/js/game-engine.js"></script>
+</body>
+</html>
