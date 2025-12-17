@@ -1,21 +1,25 @@
+from datetime import datetime
 from fastapi import Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import APIRouter, Depends
-from ..app.schemas import StartQuest
-from ..app.db import get_db
 from sqlalchemy.orm import Session
-from ..app.models import User, Attempt
-templates = Jinja2Templates(directory="templates")
+from ..app.schemas import StartQuest, StageComplete, QuestionResult
+from ..app.db import get_db
+from ..app.models import User, Attempt, StageProgress, AnswerLog
 
+templates = Jinja2Templates(directory="templates")
 router = APIRouter(tags=["api"], prefix="/api")
 
 
 @router.post("/profile")
-def get_profile(data: StartQuest, db: Session = Depends(get_db)):
+def api_profile(
+    data: StartQuest,
+    request: Request,
+    db: Session = Depends(get_db)
+):
     user = db.query(User).filter_by(email=data.email).first()
 
-    # пользователь НЕ найден → создаём
     if not user:
         user = User(
             full_name=data.full_name,
@@ -25,51 +29,142 @@ def get_profile(data: StartQuest, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(user)
 
-        return {
-            "new_user": True,
-            "profile": {
-                "full_name": user.full_name,
-                "email": user.email,
-                "attempts": []
-            }
+    # 🔥 СОХРАНЯЕМ В СЕССИЮ
+    request.session["user_id"] = user.id
+    request.session["full_name"] = user.full_name
+    request.session["email"] = user.email
+
+    return {"ok": True}
+
+@router.get("/profile", response_class=HTMLResponse)
+def profile_page(request: Request):
+    return templates.TemplateResponse(
+        "profile.html",
+        {
+            "request": request,
+            "full_name": request.session.get("full_name"),
+            "email": request.session.get("email")
         }
+    )
+@router.get("/debug-session")
+def debug_session(request: Request):
+    return dict(request.session)
+@router.post("/start_attempt")
+def start_attempt(request: Request, db: Session = Depends(get_db)):
+    user_id = request.session.get("user_id")
 
-    # пользователь найден → возвращаем профиль
-    attempts = []
-    for a in user.attempts:
-        attempts.append({
-            "id": a.id,
-            "started_at": a.started_at,
-            "finished_at": a.finished_at,
-            "total_score": a.total_score,
-            "status": a.status
-        })
+    if not user_id:
+        return JSONResponse({"error": "Нет активной сессии"}, status_code=401)
 
-    return {
-        "new_user": False,
-        "profile": {
-            "full_name": user.full_name,
-            "email": user.email,
-            "attempts": attempts
-        }
-    }
-
-@router.post("/api/start_attempt")
-def start_attempt(email: str, db: Session = Depends(get_db)):
-    user = db.query(User).filter_by(email=email).first()
-
-    # запрет повторного прохождения
-    finished = db.query(Attempt).filter_by(
-        user_id=user.id,
-        status="finished"
+    attempt = db.query(Attempt).filter_by(
+        user_id=user_id,
+        status="active"
     ).first()
 
-    if finished:
-        return {"error": "Вы уже завершили этот квест"}
+    if not attempt:
+        attempt = Attempt(user_id=user_id)
+        db.add(attempt)
+        db.commit()
+        db.refresh(attempt)
 
-    attempt = Attempt(user_id=user.id)
-    db.add(attempt)
+    # 🔥 сохраняем attempt_id в сессию
+    request.session["attempt_id"] = attempt.id
+
+    return {"ok": True}
+
+
+@router.post("/stage/complete")
+def complete_stage(data: StageComplete, request: Request, db: Session = Depends(get_db)):
+    """
+    Завершаем этап. Используем attempt_id из сессии, если не передано.
+    """
+    attempt_id = data.attempt_id or request.session.get("attempt_id")
+    if not attempt_id:
+        return JSONResponse({"error": "Attempt не найден"}, status_code=400)
+
+    stage = db.query(StageProgress).filter_by(attempt_id=attempt_id, stage_number=data.stage_number).first()
+    if not stage:
+        # создаем запись если её нет
+        stage = StageProgress(attempt_id=attempt_id, stage_number=data.stage_number)
+
+    stage.status = "completed"
+    stage.finished_at = datetime.datetime.utcnow()
+    db.add(stage)
     db.commit()
-    db.refresh(attempt)
 
-    return {"attempt_id": attempt.id}
+    return {"ok": True}
+
+
+@router.post("/stage/{stage_number}/q/{question_number}")
+def save_answer(
+    stage_number: int,
+    question_number: int,
+    request: Request,
+    data: dict,
+    db: Session = Depends(get_db)
+):
+    """
+    Универсальное сохранение ответа на вопрос любого этапа.
+    Тело запроса: { "correct": true/false }
+    """
+    # проверяем сессию
+    attempt_id = request.session.get("attempt_id")
+    if not attempt_id:
+        return JSONResponse({"error": "Попытка не найдена в сессии"}, status_code=400)
+
+    # получаем объект attempt
+    attempt = db.query(Attempt).filter_by(id=attempt_id).first()
+    if not attempt:
+        return JSONResponse({"error": "Попытка не найдена"}, status_code=404)
+
+    is_correct = bool(data.get("correct"))
+    
+    # создаём запись в AnswerLog
+    log = AnswerLog(
+        attempt_id=attempt.id,
+        stage_number=stage_number,
+        question_number=question_number,
+        is_correct=is_correct,
+        created_at=datetime.utcnow()
+    )
+    istrue = not(db.query(AnswerLog).filter_by(attempt_id=attempt.id, stage_number=stage_number, question_number=question_number).first())
+    db.add(log)
+    if istrue:
+       
+    # увеличиваем total_score если ответ верный
+        if is_correct:
+            attempt.total_score += 1
+
+    # обновляем прогресс этапа
+        stage = db.query(StageProgress).filter_by(
+            attempt_id=attempt.id,
+            stage_number=stage_number
+        ).first()
+        if stage:
+            stage.status = "completed" if is_correct else stage.status
+            stage.finished_at = datetime.utcnow() if is_correct else stage.finished_at
+
+        db.commit()
+
+    return {"saved": True, "total_score": attempt.total_score}
+
+@router.get("/api/user/progress")
+async def user_progress(
+    request: Request, 
+    db: Session = Depends(get_db)
+):
+    userid = request.session.get("user_id")
+    user = db.query(User).filter_by(id=userid).first()
+    # Получаем все ответы пользователя
+    logs = db.query(AnswerLog).filter(AnswerLog.user_id == user.id).all()
+
+    stages_dict = {}
+    for log in logs:
+        stages_dict.setdefault(log.stage_number, []).append({
+            "q": log.question_number,
+            "completed": log.correct
+        })
+
+    stages = [{"stage": stage, "questions": qs} for stage, qs in stages_dict.items()]
+
+    return {"stages": stages}

@@ -1,6 +1,10 @@
 from typing import List, Optional
 from datetime import datetime
 from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+
+class StartAttempt(BaseModel):
+    email: EmailStr
 
 
 class AttemptInfo(BaseModel):
@@ -10,6 +14,9 @@ class AttemptInfo(BaseModel):
     total_score: int
     status: str
 
+class AttemptAnswer(BaseModel):
+    stage: int
+    is_correct: bool
 
 class UserProfile(BaseModel):
     full_name: str
@@ -19,3 +26,12 @@ class UserProfile(BaseModel):
 class StartQuest(BaseModel):
     full_name: str
     email: str
+
+class StageComplete(BaseModel):
+    attempt_id: int
+    stage_number: int
+
+class QuestionResult(BaseModel):
+    attempt_id: int
+    correct: bool
+

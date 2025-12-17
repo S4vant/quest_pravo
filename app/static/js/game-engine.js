@@ -79,82 +79,101 @@ function loadStage1() {
         });
 }
 
-
-
 let currentEmail = null;
 let attemptId = null;
 
-function loadProfile() {
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const error = document.getElementById("form-error");
+async function loadProfile() {
+    const name = document.getElementById("name")?.value.trim();
+    const email = document.getElementById("email")?.value.trim();
 
-    error.innerText = "";
-    if (!email) {
-        error.innerText = "Введите email";
+    if (!name || !email) {
+        document.getElementById("form-error").innerText = "Заполните ФИО и email";
         return;
     }
 
-    fetch("/api/profile", {
+    await fetch("/api/profile", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({full_name: name, email: email})
-    })
-    .then(r => r.json())
-    .then(data => {
-        currentEmail = email;
-
-        document.getElementById("player-form").style.display = "none";
-        document.getElementById("profile").style.display = "block";
-
-        document.getElementById("p-name").innerText = data.profile.full_name;
-        document.getElementById("p-email").innerText = data.profile.email;
-
-        renderAttempts(data.profile.attempts);
+        body: JSON.stringify({ full_name: name, email })
     });
+
+    // ⬅️ сразу в профиль
+    window.location.href = "/api/profile";
 }
 
-function renderAttempts(attempts) {
-    const div = document.getElementById("attempts");
-    div.innerHTML = "<h3>Прохождения:</h3>";
 
-    if (attempts.length === 0) {
-        div.innerHTML += "<p>Прохождений нет</p>";
+async function startAttempt() {
+    const name = document.getElementById("full_name").value.trim();
+    const email = document.getElementById("email").value.trim();
+
+    await fetch("/api/profile", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ full_name: name, email })
+    });
+
+    const res = await fetch("/api/start_attempt", { method: "POST" });
+    const data = await res.json();
+
+    if (data.error) {
+        alert(data.error);
         return;
     }
 
-    let finished = false;
+    window.location.href = "/stage/1";
+}
 
-    attempts.forEach(a => {
-        div.innerHTML += `
-          <p>
-            📅 ${new Date(a.started_at).toLocaleDateString()} —
-            🎯 ${a.total_score} —
-            📌 ${a.status}
-          </p>
-        `;
-        if (a.status === "finished") finished = true;
+
+function completeStage(stageNumber) {
+    fetch("/api/stage/complete", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            attempt_id: attemptId,
+            stage_number: stageNumber
+        })
+    })
+    .then(() => {
+        window.location.href = "/stage/1/test";
     });
+}
+function logAnswer(questionNumber, isCorrect) {
+    fetch("/api/answer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            attempt_id: ATTEMPT_ID,
+            stage_number: STAGE_NUMBER,
+            question_number: questionNumber,
+            correct: isCorrect
+        })
+    });
+}
+async function loadProgress() {
+    try {
+        const res = await fetch("/api/user/progress"); // серверный endpoint для прогресса
+        const data = await res.json();
 
-    if (finished) {
-        document.getElementById("start-btn").style.display = "none";
+        let totalQuestions = 0;
+        let completedQuestions = 0;
+
+        data.stages.forEach(stage => {
+            stage.questions.forEach(q => {
+                totalQuestions++;
+                if (q.completed) completedQuestions++;
+            });
+        });
+
+        const percent = totalQuestions === 0 ? 0 : Math.round((completedQuestions / totalQuestions) * 100);
+
+        const progressBar = document.getElementById("progress-bar");
+        const progressText = document.getElementById("progress-text");
+
+        progressBar.style.width = percent + "%";
+        progressText.textContent = percent + "%";
+    } catch (err) {
+        console.error("Ошибка загрузки прогресса:", err);
     }
 }
 
-function startAttempt() {
-    fetch(`/api/start_attempt?email=${currentEmail}`, {
-        method: "POST"
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.error) {
-            alert(data.error);
-        } else {
-            attemptId = data.attempt_id;
-            document.getElementById("profile").style.display = "none";
-            document.getElementById("stage-container").style.display = "block";
-            loadStage1();
-        }
-    });
-}
-
+document.addEventListener("DOMContentLoaded", loadProgress);
