@@ -35,3 +35,8 @@ class QuestionResult(BaseModel):
     attempt_id: int
     correct: bool
 
+class AnswerData(BaseModel):
+    attempt_id: int
+    stage_number: int
+    question_number: int
+    correct: bool

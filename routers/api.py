@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from ..app.schemas import StartQuest, StageComplete, QuestionResult
+from ..app.schemas import StartQuest, StageComplete, AnswerData
 from ..app.db import get_db
 from ..app.models import User, Attempt, StageProgress, AnswerLog
 
@@ -95,7 +95,7 @@ def complete_stage(data: StageComplete, request: Request, db: Session = Depends(
     return {"ok": True}
 
 
-@router.post("/stage/{stage_number}/q/{question_number}")
+
 def save_answer(
     stage_number: int,
     question_number: int,
@@ -148,23 +148,64 @@ def save_answer(
 
     return {"saved": True, "total_score": attempt.total_score}
 
-@router.get("/api/user/progress")
+@router.post("/stage/{stage_number}/q/{question_number}")
+async def log_answer(
+    stage_number: int,
+    question_number: int,
+    request: Request,
+    data: dict,
+    db: Session = Depends(get_db)
+):
+    answer = AnswerData(
+        attempt_id=request.session.get("attempt_id"),
+        stage_number=stage_number,
+        question_number=question_number,
+        correct=data.get("correct")
+    )
+    # Проверяем, есть ли уже запись
+
+    existing = db.query(AnswerLog).filter(
+        AnswerLog.attempt_id == answer.attempt_id,
+        AnswerLog.stage_number == answer.stage_number,
+        AnswerLog.question_number == answer.question_number
+    ).first()
+
+    if existing:
+        # Если ответ уже есть и он был неверным, обновляем на верный
+        if answer.correct and not existing.is_correct:
+            existing.is_correct = True
+            db.commit()
+        # Иначе ничего не делаем (не создаем новый)
+    else:
+        # Создаем новую запись
+        new_log = AnswerLog(
+            attempt_id=answer.attempt_id,
+            stage_number=answer.stage_number,
+            question_number=answer.question_number,
+            is_correct=answer.correct
+        )
+        db.add(new_log)
+        db.commit()
+
+    return {"saved": True}
+@router.get("/user/progress")
 async def user_progress(
     request: Request, 
     db: Session = Depends(get_db)
 ):
-    userid = request.session.get("user_id")
-    user = db.query(User).filter_by(id=userid).first()
+    Attempt_id = request.session.get("attempt_id")
+
+    attempd = db.query(Attempt).filter_by(id=Attempt_id).first()
     # Получаем все ответы пользователя
-    logs = db.query(AnswerLog).filter(AnswerLog.user_id == user.id).all()
+    logs = db.query(AnswerLog).filter(AnswerLog.attempt_id == attempd.id).all()
 
     stages_dict = {}
     for log in logs:
         stages_dict.setdefault(log.stage_number, []).append({
             "q": log.question_number,
-            "completed": log.correct
+            "completed": log.is_correct
         })
 
     stages = [{"stage": stage, "questions": qs} for stage, qs in stages_dict.items()]
-
+    print(stages)
     return {"stages": stages}

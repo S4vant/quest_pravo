@@ -2,7 +2,7 @@ let stageData;
 let gameIndex = 0;
 let itemIndex = 0;
 let score = 0;
-
+document.addEventListener("DOMContentLoaded", loadProgress);
 fetch("/static/stages/stage1.json")
   .then(r => r.json())
   .then(data => {
@@ -103,8 +103,16 @@ async function loadProfile() {
 
 
 async function startAttempt() {
-    const name = document.getElementById("full_name").value.trim();
-    const email = document.getElementById("email").value.trim();
+    const nameElem = document.querySelector(".profile-name");
+    const emailElem = document.querySelector(".profile-email");
+
+    const name = nameElem?.innerText.trim();
+    const email = emailElem?.innerText.trim();
+
+    if (!name || !email) {
+        alert("ФИО или email не указаны!");
+        return;
+    }
 
     await fetch("/api/profile", {
         method: "POST",
@@ -150,17 +158,20 @@ function logAnswer(questionNumber, isCorrect) {
     });
 }
 async function loadProgress() {
+  
     try {
-        const res = await fetch("/api/user/progress"); // серверный endpoint для прогресса
+        const res = await fetch("/api/user/progress");
         const data = await res.json();
 
-        let totalQuestions = 0;
+        let totalQuestions = 5;
         let completedQuestions = 0;
 
         data.stages.forEach(stage => {
             stage.questions.forEach(q => {
                 totalQuestions++;
-                if (q.completed) completedQuestions++;
+                if (q.completed === true || q.completed === "True" || q.completed === "true") {
+                    completedQuestions++;
+                }
             });
         });
 
@@ -168,7 +179,10 @@ async function loadProgress() {
 
         const progressBar = document.getElementById("progress-bar");
         const progressText = document.getElementById("progress-text");
-
+        if (!progressBar) {
+    console.warn("Прогресс-бар не найден на странице");
+    return;
+}
         progressBar.style.width = percent + "%";
         progressText.textContent = percent + "%";
     } catch (err) {
@@ -176,4 +190,5 @@ async function loadProgress() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", loadProgress);
+
+
