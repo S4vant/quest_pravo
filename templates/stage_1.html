@@ -16,7 +16,7 @@
 
     <div class="container">
         <!-- Первое задание -->
-        <section class="stage" id="stage-1">
+        <section class="stage" id="stage-1" data-attempt-id="{{ attempt_id }}">
             <div class="stage-header">
                 Этап 1: Соберите определение трудового права
             </div>
@@ -70,11 +70,122 @@
                 <button id="submit-q2" class="btn primary-btn">Проверить и сохранить</button>
                 <p id="feedback-q2" class="feedback-text"></p>
             </div>
+            <div class="citation">
+                    Источник: онлайн-лекция «Основы трудового права» от Надежды Развейкиной, к.ю.н., доцент.
+                </div>
         </section>
+        <section class="stage" id="stage-3" data-attempt-id="{{ attempt_id }}">
+    <div class="stage-header">
+        Этап 3: Принципы трудового права
+    </div>
+
+    <div class="stage-content">
+        <div class="instructions">
+            <strong>Задание:</strong> Выберите <u>только</u> 5 принципов трудового права.
+        </div>
+
+        <div class="blocks-container" id="principles-bank">
+            <!-- JS -->
+        </div>
+
+        <div class="drop-zone" id="principles-drop">
+            <!-- Пусто -->
+        </div>
+
+        <div id="principles-feedback" class="feedback"></div>
+
+        <div style="display: flex; gap: 10px;">
+            <button class="btn" id="check-principles-btn" onclick="checkPrinciples()" disabled>
+                <i class="fas fa-check"></i> Проверить
+            </button>
+            <button class="btn btn-clear" onclick="clearDropZone('principles-drop')">
+                <i class="fas fa-trash-alt"></i> Очистить
+            </button>
+        </div>
+
+        <div class="citation">
+            Источник: Трудовой кодекс РФ, ст. 2
+        </div>
+    </div>
+</section>
+<section class="stage" id="stage-4" >
+    <div class="stage-header">
+        Этап 4: Соотнесите нарушения трудового права с ситуациями
+    </div>
+
+    <div class="stage-content">
+        <div class="instructions">
+            <strong>Задание:</strong> Перетащите ситуацию к соответствующему нарушению трудового законодательства.
+            <br>Лишние ситуации оставьте в банке.
+        </div>
+
+        <div style="display:flex; gap:30px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:280px;">
+                <h3>Нарушения</h3>
+                <div id="violations-container"></div>
+            </div>
+
+            <div style="flex:1; min-width:280px;">
+                <h3>Ситуации</h3>
+                <div class="blocks-container" id="situations-bank"></div>
+            </div>
+        </div>
+
+        <div id="violations-feedback" class="feedback"></div>
+
+        <div style="display:flex; gap:10px;">
+            <button class="btn" onclick="checkViolations()">
+                <i class="fas fa-check"></i> Проверить
+            </button>
+            <button class="btn btn-clear" onclick="resetViolations()">
+                <i class="fas fa-undo"></i> Сбросить
+            </button>
+        </div>
+    </div>
+</section>
+<!-- Этап 5: Сетка с источниками трудового права -->
+<section class="stage" id="stage-5" >
+    <div class="stage-header">
+        Этап 5: Найдите источники трудового права в сетке
+    </div>
+    <div class="stage-content">
+        <div class="instructions">
+            <strong>Задание:</strong> В сетке спрятаны слова — <u>источники трудового права</u>. Остальные буквы — отвлекающие.
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <div id="word-grid" class="word-grid"></div>
+        </div>
+
+        <div id="selection-info" style="margin-bottom: 15px; font-size: 1.1em;">
+            Выделено слов: <span id="selected-count">0</span>
+            <span id="selected-words" style="margin-left: 10px; font-weight: bold; color: var(--primary);"></span>
+        </div>
+
+        <div id="crossword-feedback" class="feedback"></div>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn" id="check-grid-btn" onclick="checkGridSelectionSources()" disabled>
+                <i class="fas fa-check"></i> Проверить
+            </button>
+            <button class="btn btn-clear" onclick="clearGridSelectionSources()">
+                <i class="fas fa-undo"></i> Сбросить выделение
+            </button>
+        </div>
+
+        <div class="citation">
+            Источник: Малько А.В., Субочев В.В. Правоведение. — С. 66.
+        </div>
+    </div>
+</section>
     </div>
 
     <script src="/static/js/stage1_q1.js"></script>
     <script src="/static/js/stage1_q2.js"></script>
     <script src="/static/js/game-engine.js"></script>
+    <script src="/static/js/stage1_q3.js"></script>
+    <script src="/static/js/stage1_q4.js"></script>
+    <script src="/static/js/stage1_q5.js"></script>
+
 </body>
 </html>

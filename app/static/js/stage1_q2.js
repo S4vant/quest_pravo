@@ -10,7 +10,7 @@ const DISTRACTORS_Q2 = [
     "Полное локальное регулирование",
     "Только договорное регулирование"
 ];
-
+// const IS_MOBILE = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
 let draggedBlockQ2 = null;
 
@@ -25,19 +25,56 @@ function shuffle(array) {
     return [...array].sort(() => Math.random() - 0.5);
 }
 
+// function initStage2() {
+//     const bank = document.getElementById("blocks-container-q2");
+//     const allBlocks = shuffle([...METHOD_BLOCKS, ...DISTRACTORS_Q2]);
+//     bank.innerHTML = '';
+//     allBlocks.forEach(text => {
+//         const block = document.createElement("div");
+//         block.className = "draggable block";
+//         block.draggable = true;
+//         block.textContent = text;
+//         block.dataset.correct = METHOD_BLOCKS.includes(text) ? "true" : "false";
+//         bank.appendChild(block);
+//     });
+// }
+
 function initStage2() {
     const bank = document.getElementById("blocks-container-q2");
-    const allBlocks = shuffle([...METHOD_BLOCKS, ...DISTRACTORS_Q2]);
+    const dropZone = document.getElementById("stage1-drop-q2");
+
+    if (!bank || !dropZone) {
+        console.error("❌ Не найден контейнер этапа 2");
+        return;
+    }
+
+    let allBlocks = shuffle([...METHOD_BLOCKS, ...DISTRACTORS_Q2]);
     bank.innerHTML = '';
+    dropZone.innerHTML = '';
+
     allBlocks.forEach(text => {
-        const block = document.createElement("div");
-        block.className = "draggable block";
-        block.draggable = true;
+        const block = document.createElement('div');
+        block.className = 'block';
         block.textContent = text;
         block.dataset.correct = METHOD_BLOCKS.includes(text) ? "true" : "false";
+
+        block.addEventListener('click', () => {
+            if (block.parentElement === bank) {
+                dropZone.appendChild(block);
+            } else {
+                bank.appendChild(block);
+            }
+        });
+
+        if (!IS_MOBILE) {
+            block.draggable = true;
+        }
+
         bank.appendChild(block);
     });
 }
+
+
 
 function setupDragAndDropQ2() {
     document.addEventListener("dragstart", e => {

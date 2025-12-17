@@ -2,7 +2,7 @@ let stageData;
 let gameIndex = 0;
 let itemIndex = 0;
 let score = 0;
-document.addEventListener("DOMContentLoaded", loadProgress);
+
 fetch("/static/stages/stage1.json")
   .then(r => r.json())
   .then(data => {
@@ -158,12 +158,22 @@ function logAnswer(questionNumber, isCorrect) {
     });
 }
 async function loadProgress() {
-  
     try {
+        // Очистка прогресса
+        const progressBar = document.getElementById("progress-bar");
+        const progressText = document.getElementById("progress-text");
+        if (progressBar) progressBar.style.width = "0%";
+        if (progressText) progressText.textContent = "0%";
+
+        selectedWords = []; // для этапа 5, если был заполнен
+        document.getElementById('selected-count').textContent = '0';
+        document.getElementById('selected-words').textContent = '';
+
+        // Запрос прогресса с сервера
         const res = await fetch("/api/user/progress");
         const data = await res.json();
 
-        let totalQuestions = 5;
+        let totalQuestions = 0;
         let completedQuestions = 0;
 
         data.stages.forEach(stage => {
@@ -177,18 +187,13 @@ async function loadProgress() {
 
         const percent = totalQuestions === 0 ? 0 : Math.round((completedQuestions / totalQuestions) * 100);
 
-        const progressBar = document.getElementById("progress-bar");
-        const progressText = document.getElementById("progress-text");
-        if (!progressBar) {
-    console.warn("Прогресс-бар не найден на странице");
-    return;
-}
-        progressBar.style.width = percent + "%";
-        progressText.textContent = percent + "%";
+        if (progressBar) progressBar.style.width = percent + "%";
+        if (progressText) progressText.textContent = percent + "%";
+
     } catch (err) {
         console.error("Ошибка загрузки прогресса:", err);
     }
 }
 
 
-
+document.addEventListener("DOMContentLoaded", loadProgress);

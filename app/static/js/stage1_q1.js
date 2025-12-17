@@ -15,6 +15,8 @@ const LABOUR_LAW_DISTRACTORS = [
     "в сфере управления трудовыми ресурсами",
     "возникающие в процессе производства"
 ];
+const IS_MOBILE = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
 
 let draggedBlock = null;
 
@@ -27,19 +29,62 @@ function shuffle(array) {
     return [...array].sort(() => Math.random() - 0.5);
 }
 
+// function initStage1() {
+//     const bank = document.getElementById('definition-bank');
+//     let allBlocks = shuffle([...LABOUR_LAW_DEFINITION, ...LABOUR_LAW_DISTRACTORS]);
+//     bank.innerHTML = '';
+//     allBlocks.forEach((text, i) => {
+//         const block = document.createElement('div');
+//         block.className = 'block';
+//         // block.draggable = true;
+//         block.textContent = text;
+//         block.addEventListener('click', () => {
+//             if (block.parentElement.id === 'definition-bank') {
+//                 drop.appendChild(block);
+//             } else {
+//                 bank.appendChild(block);
+//             }
+//         });
+//         bank.appendChild(block);
+//     });
+// }
+
 function initStage1() {
     const bank = document.getElementById('definition-bank');
+    const dropZone = document.getElementById('definition-drop');
+
     let allBlocks = shuffle([...LABOUR_LAW_DEFINITION, ...LABOUR_LAW_DISTRACTORS]);
     bank.innerHTML = '';
-    allBlocks.forEach((text, i) => {
+    dropZone.innerHTML = '';
+
+    allBlocks.forEach(text => {
         const block = document.createElement('div');
         block.className = 'block';
-        block.draggable = true;
         block.textContent = text;
+
+        block.addEventListener('click', () => {
+            const bankEl = document.getElementById('definition-bank');
+            const dropEl = document.getElementById('definition-drop');
+
+            if (block.parentElement === bankEl) {
+                dropEl.appendChild(block);
+            } else {
+                bankEl.appendChild(block);
+            }
+        });
+
+        if (!IS_MOBILE) {
+            block.draggable = true;
+        }
+
         bank.appendChild(block);
     });
 }
 
+function moveBlock(block, dropId) {
+    const dropZone = document.getElementById(dropId);
+    dropZone.appendChild(block);
+}
 function setupDragAndDrop() {
     document.addEventListener('dragstart', (e) => {
         if (e.target.classList.contains('block')) {
@@ -83,7 +128,8 @@ function setupDragAndDrop() {
 function clearDropZone(zoneId) {
     const zone = document.getElementById(zoneId);
     const bank = document.getElementById('definition-bank');
-    Array.from(zone.querySelectorAll('.block')).forEach(block => bank.appendChild(block));
+
+    Array.from(zone.children).forEach(block => bank.appendChild(block));
 }
 
 async function checkDefinition() {
