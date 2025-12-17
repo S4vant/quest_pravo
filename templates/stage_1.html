@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Этап 1 — Трудовое право</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/stage1.css">
+</head>
+<body>
+    <!-- Левая боковая панель -->
+    <div class="stage-sidebar">
+        <a href="/api/profile"><i class="fas fa-user"></i> Вернуться в профиль</a>
+        <p><strong>Этап 1:</strong> Соберите определение трудового права</p>
+        <p>Этап 2: Метод трудового права</p>
+    </div>
+
+    <div class="container">
+        <!-- Первое задание -->
+        <section class="stage" id="stage-1">
+            <div class="stage-header">
+                Этап 1: Соберите определение трудового права
+            </div>
+            <div class="stage-content">
+                <div class="instructions">
+                    <strong>Задание:</strong> Соберите <u>точное</u> определение трудового права.<br>
+                    Перетащите блоки в правильном порядке в поле ниже. Доступны <strong>лишние фрагменты</strong>.<br>
+                    Продолжить можно <u>только при точном совпадении формулировки</u>.
+                </div>
+
+                <div class="blocks-container" id="definition-bank">
+                    <!-- Блоки с фрагментами будут добавлены JS -->
+                </div>
+
+                <div class="drop-zone" id="definition-drop">
+                    <!-- Пустое поле для перетаскивания -->
+                </div>
+
+                <div id="definition-feedback" class="feedback"></div>
+
+                <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn" id="check-definition-btn" onclick="checkDefinition()">Проверить и продолжить</button>
+                    <button class="btn btn-clear" onclick="clearDropZone('definition-drop')">Очистить</button>
+                </div>
+
+                <div class="citation">
+                    Источник: онлайн-лекция «Основы трудового права» от Надежды Развейкиной, к.ю.н., доцент.
+                </div>
+            </div>
+        </section>
+
+        <!-- Второе задание -->
+        <section id="stage1-q2" class="stage card fade-in" data-attempt-id="{{ attempt_id }}">
+            <div class="stage-header">
+                Этап 2: Расставьте блоки метода трудового права
+            </div>
+            <div class="stage-content">
+                <div class="instructions">
+                    <strong>Задание:</strong>Составьте последовательность блоков, относящихся к методу трудового права, как в лекции.
+                </div>
+    
+
+                 <div class="blocks-container" id="blocks-container-q2">
+                    <!-- Блоки с фрагментами будут добавлены JS -->
+                </div>
+
+                <div class="drop-zone" id="stage1-drop-q2">
+                    <!-- Пустое поле для перетаскивания -->
+                </div>
+
+                <button id="submit-q2" class="btn primary-btn">Проверить и сохранить</button>
+                <p id="feedback-q2" class="feedback-text"></p>
+            </div>
+        </section>
+    </div>
+
+    <script src="/static/js/stage1_q1.js"></script>
+    <script src="/static/js/stage1_q2.js"></script>
+    <script src="/static/js/game-engine.js"></script>
+</body>
+</html>

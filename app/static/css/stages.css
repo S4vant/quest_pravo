@@ -1,0 +1,251 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #1e1e2f, #0f0f1a);
+    color: #fff;
+}
+
+.main-header {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.main-header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.main-header p {
+    opacity: 0.8;
+}
+
+.game {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    margin-bottom: 30px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 6px;
+}
+
+input {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+}
+
+.primary-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #6c63ff, #8a7bff);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(108,99,255,0.4);
+}
+
+.error-text {
+    color: #ff6b6b;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.profile-info {
+    margin-bottom: 20px;
+}
+
+.profile-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.profile-email {
+    opacity: 0.8;
+}
+
+.attempts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fade-in {
+    animation: fade 0.5s ease;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.main-footer {
+    text-align: center;
+    padding: 20px;
+    opacity: 0.6;
+    font-size: 13px;
+}
+.stages-block {
+    margin-top: 25px;
+}
+
+.stage-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.stage-header {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.stage-num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #6c63ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.stage-card h4 {
+    margin: 0;
+}
+
+.stage-card p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+.progress {
+    background: rgba(255,255,255,0.1);
+    height: 8px;
+    border-radius: 6px;
+    margin: 12px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #6c63ff, #8a7bff);
+    width: 0%;
+}
+
+.stage-btn {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: #6c63ff;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.stage-btn:hover {
+    opacity: 0.9;
+}
+
+.stage-card.disabled {
+    opacity: 0.4;
+}
+
+.stage-btn.locked {
+    background: transparent;
+    border: 1px dashed rgba(255,255,255,0.4);
+    cursor: default;
+}
+/* Контейнер блоков */
+.blocks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+/* Блоки */
+.block {
+    padding: 12px 16px;
+    background-color: #2c2c2c; /* тёмный фон */
+    color: #f0f0f0;
+    border-radius: 8px;
+    cursor: grab;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+}
+
+.block.dragging {
+    opacity: 0.6;
+    transform: scale(1.05);
+    cursor: grabbing;
+}
+
+/* Кнопка проверки */
+#submit-q2.primary-btn {
+    margin-top: 12px;
+    padding: 10px 18px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#submit-q2.primary-btn:hover {
+    background-color: #45a049;
+}
+
+/* Текст обратной связи */
+.feedback-text {
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+/* Плавное появление */
+.card.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

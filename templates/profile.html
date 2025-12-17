@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль — Квест «Трудовое право»</title>
+    <link rel="stylesheet" href="/static/css/stages.css">
+    <link rel="icon" href="/static/favicon.png">
+</head>
+<body>
+
+<header class="main-header">
+    <h1>🧠 Квест по трудовому праву</h1>
+    <p>Профиль игрока и этапы прохождения</p>
+</header>
+
+<main class="game">
+
+    <!-- ПРОФИЛЬ -->
+    <section class="card fade-in">
+        <h2>Профиль игрока</h2>
+
+        <div class="profile-info">
+            <p class="profile-name">{{ full_name }}</p>
+            <p class="profile-email">{{ email }}</p>
+        </div>
+
+        <button class="primary-btn" onclick="startAttempt()">
+            ▶ Продолжить квест
+        </button>
+    </section>
+
+    <!-- ЭТАПЫ -->
+    <h3>Этапы квеста</h3>
+
+    <div class="stage-card">
+        <div class="stage-header">
+            <span class="stage-num">1</span>
+            <div>
+                <h4>Трудовое право как отрасль права</h4>
+                <p>Базовые понятия и принципы</p>
+            </div>
+        </div>
+
+        <div class="progress-wrapper">
+    <label for="progress">Прогресс выполнения заданий:</label>
+    <div class="progress-bar-container">
+        <div id="progress-bar" class="progress-bar"></div>
+    </div>
+    <span id="progress-text">0%</span>
+</div>
+
+        <span class="stage-btn" onclick="startStage(1)">Перейти</span>
+    </div>
+
+    <div class="stage-card disabled">
+        <div class="stage-header">
+            <span class="stage-num">2</span>
+            <div>
+                <h4>Трудовой договор</h4>
+                <p>Заключение и оформление</p>
+            </div>
+        </div>
+        <span class="stage-btn locked">Скоро</span>
+    </div>
+
+</main>
+
+<footer class="main-footer">
+    <p>© Учебный квест • Трудовое право</p>
+</footer>
+
+<script src="/static/js/start.js"></script>
+</body>
+</html>

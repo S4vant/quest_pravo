@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Квест «Трудовое право»</title>
+    <link rel="stylesheet" href="/static/css/stages.css">
+    <link rel="icon" href="/static/favicon.png">
+</head>
+<body>
+
+<header class="main-header">
+    <h1>🧠 Квест по трудовому праву</h1>
+    <p>Интерактивное прохождение учебных этапов</p>
+</header>
+
+<main class="game">
+
+    <!-- ВХОД -->
+    <section id="player-form" class="card fade-in">
+        <h2>Вход в квест</h2>
+
+        <div class="form-group">
+            <label for="name">ФИО</label>
+            <input id="name" type="text" placeholder="Иванов Иван Иванович">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="example@mail.ru">
+        </div>
+
+        <button class="primary-btn" onclick="loadProfile()">
+            Продолжить
+        </button>
+
+        <p id="form-error" class="error-text"></p>
+    </section>
+
+    <!-- ПРОФИЛЬ -->
+    <section id="profile" class="card fade-in" style="display:none;">
+    <h2>Профиль игрока</h2>
+
+    <div class="profile-info">
+        <p class="profile-name" id="p-name"></p>
+        <p class="profile-email" id="p-email"></p>
+    </div>
+
+    <button id="start-btn" class="primary-btn" onclick="startAttempt()">
+        Начать квест
+    </button>
+</section>
+    <h3>Этапы квеста</h3>
+
+    <div class="stage-card">
+        <div class="stage-header">
+            <span class="stage-num">1</span>
+            <div>
+                <h4>Трудовое право как отрасль права</h4>
+                <p>Базовые понятия и принципы</p>
+            </div>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" style="width: 0%"></div>
+        </div>
+
+        <span class="stage-btn" onclick="startStage(1)">Начать</span>
+    </div>
+
+    <div class="stage-card disabled">
+        <div class="stage-header">
+            <span class="stage-num">2</span>
+            <div>
+                <h4>Трудовой договор</h4>
+                <p>Заключение и оформление</p>
+            </div>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" style="width: 0%"></div>
+        </div>
+
+        <span class="stage-btn locked">Скоро</span>
+    </div>
+
+    <div class="stage-card disabled">
+        <div class="stage-header">
+            <span class="stage-num">3</span>
+            <div>
+                <h4>Дисциплина труда</h4>
+            </div>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" style="width: 0%"></div>
+        </div>
+
+        <span class="stage-btn locked">Скоро</span>
+    </div>
+
+    <div class="stage-card disabled">
+        <div class="stage-header">
+            <span class="stage-num">4</span>
+            <div>
+                <h4>Материальная ответственность</h4>
+            </div>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" style="width: 0%"></div>
+        </div>
+
+        <span class="stage-btn locked">Скоро</span>
+    </div>
+
+    <div class="stage-card disabled">
+        <div class="stage-header">
+            <span class="stage-num">5</span>
+            <div>
+                <h4>Итоговое испытание</h4>
+            </div>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" style="width: 0%"></div>
+        </div>
+
+        <span class="stage-btn locked">Скоро</span>
+    </div>
+</div>
+    </section>
+
+    <!-- ИГРА -->
+    <section id="stage-container" class="card fade-in" style="display:none;">
+        <h2 id="title"></h2>
+        <p id="text"></p>
+        <div id="actions"></div>
+    </section>
+
+</main>
+
+<footer class="main-footer">
+    <p>© Учебный квест • Трудовое право</p>
+</footer>
+
+<script src="/static/js/game-engine.js"></script>
+<script src="/static/js/start.js"></script>
+</body>
+</html>
