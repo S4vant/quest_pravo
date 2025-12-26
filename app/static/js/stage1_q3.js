@@ -100,7 +100,7 @@ async function saveResult3(isCorrect) {
             body: JSON.stringify({
                 attempt_id: attemptId,
                 stage_number: 1,
-                question_number: 2,
+                question_number: 3,
                 correct: isCorrect
             })
         });

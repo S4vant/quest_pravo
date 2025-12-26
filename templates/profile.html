@@ -43,26 +43,46 @@
 
         <div class="progress-wrapper">
     <label for="progress">Прогресс выполнения заданий:</label>
-    <div class="progress-bar-container">
-        <div id="progress-bar" class="progress-bar"></div>
+    <div class="progress">
+        <div class="progress-bar" data-stage="1"></div>
     </div>
-    <span id="progress-text">0%</span>
+    
 </div>
 
         <span class="stage-btn" onclick="startStage(1)">Перейти</span>
     </div>
 
-    <div class="stage-card disabled">
+    <div class="stage-card">
         <div class="stage-header">
             <span class="stage-num">2</span>
             <div>
                 <h4>Трудовой договор</h4>
+            </div>
+        </div>
+        <label for="progress">Прогресс выполнения заданий:</label>
+    <div class="progress">
+        <div class="progress-bar" data-stage="2"></div>
+    </div>
+    
+
+        <span class="stage-btn" onclick="startStage(2)">Перейти</span>
+    </div>
+<div class="stage-card">
+        <div class="stage-header">
+            <span class="stage-num">3</span>
+            <div>
+                <h4>Дисциплина труда</h4>
                 <p>Заключение и оформление</p>
             </div>
         </div>
-        <span class="stage-btn locked">Скоро</span>
+        <label for="progress">Прогресс выполнения заданий:</label>
+    <div class="progress">
+        <div class="progress-bar" data-stage="3"></div>
     </div>
+    
 
+        <span class="stage-btn" onclick="startStage(3)">Перейти</span>
+    </div>
 </main>
 
 <footer class="main-footer">
