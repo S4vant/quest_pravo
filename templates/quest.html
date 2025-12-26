@@ -61,13 +61,13 @@
         </div>
 
         <div class="progress">
-            <div class="progress-bar" style="width: 0%"></div>
+            <div class="progress-bar" data-stage="1"></div>
         </div>
 
         <span class="stage-btn" onclick="startStage(1)">Начать</span>
     </div>
 
-    <div class="stage-card disabled">
+    <div class="stage-card">
         <div class="stage-header">
             <span class="stage-num">2</span>
             <div>
@@ -76,14 +76,16 @@
             </div>
         </div>
 
-        <div class="progress">
-            <div class="progress-bar" style="width: 0%"></div>
+        <div class="stage-card">
+   
+    <div class="progress">
+            <div class="progress-bar" data-stage="2"></div>
         </div>
 
-        <span class="stage-btn locked">Скоро</span>
+        <span class="stage-btn" onclick="startStage(2)">Начать</span>
     </div>
 
-    <div class="stage-card disabled">
+    <div class="stage-card">
         <div class="stage-header">
             <span class="stage-num">3</span>
             <div>

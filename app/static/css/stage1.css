@@ -420,18 +420,19 @@ body {
     cursor: pointer;
     transition: background-color 0.2s;
 }
+
 #submit-q2.primary-btn:hover {
     background-color: #45a049;
 }
 
-.progress-bar-container {
+/* .progress-bar-container {
     width: 100%;
     background-color: #f3f3f3;
     border-radius: 10px;
     overflow: hidden;
     height: 20px;
     margin-top: 5px;
-}
+} */
 
 .progress-bar {
     height: 100%;
@@ -439,4 +440,49 @@ body {
     background-color: #1a365d;
     transition: width 0.5s;
     border-radius: 10px;
+}
+/* #definition-drop .block {
+    background: #133056;
+    border-color: #2563eb;
+} */
+.word-grid {
+    display: inline-grid;
+    grid-template-columns: repeat(15, 30px);
+    gap: 2px;
+    background: #e2e8f0;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.grid-cell {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    background-color: white;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.grid-cell.selected {
+    background-color: #bee3f8;
+}
+
+.feedback {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.feedback.success {
+    color: green;
+}
+
+.feedback.error {
+    color: red;
 }

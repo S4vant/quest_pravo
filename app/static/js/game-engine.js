@@ -3,12 +3,6 @@ let gameIndex = 0;
 let itemIndex = 0;
 let score = 0;
 
-fetch("/static/stages/stage1.json")
-  .then(r => r.json())
-  .then(data => {
-    stageData = data;
-    renderGame();
-  });
 
 function renderGame() {
   const game = stageData.games[gameIndex];
@@ -16,9 +10,8 @@ function renderGame() {
 
   document.getElementById("title").innerText = game.title;
   document.getElementById("text").innerText = item.text;
-
+  
   const area = document.getElementById("actions");
-  area.innerHTML = "";
 
   if (game.type === "yes_no") {
     ["Относится", "Не относится"].forEach(val => {
@@ -58,9 +51,6 @@ function next() {
   }
 }
 
-function finishStage() {
-  alert(`Этап завершён. Баллы: ${score}`);
-}
 function button(text, handler) {
   const b = document.createElement("button");
   b.innerText = text;
@@ -103,8 +93,16 @@ async function loadProfile() {
 
 
 async function startAttempt() {
-    const name = document.getElementById("full_name").value.trim();
-    const email = document.getElementById("email").value.trim();
+    const nameElem = document.querySelector(".profile-name");
+    const emailElem = document.querySelector(".profile-email");
+
+    const name = nameElem?.innerText.trim();
+    const email = emailElem?.innerText.trim();
+
+    if (!name || !email) {
+        alert("ФИО или email не указаны!");
+        return;
+    }
 
     await fetch("/api/profile", {
         method: "POST",
@@ -149,31 +147,40 @@ function logAnswer(questionNumber, isCorrect) {
         })
     });
 }
+
 async function loadProgress() {
     try {
-        const res = await fetch("/api/user/progress"); // серверный endpoint для прогресса
+        const res = await fetch("/api/user/progress");
         const data = await res.json();
 
-        let totalQuestions = 0;
-        let completedQuestions = 0;
+        if (!data.stages || !Array.isArray(data.stages)) return;
 
-        data.stages.forEach(stage => {
-            stage.questions.forEach(q => {
-                totalQuestions++;
-                if (q.completed) completedQuestions++;
-            });
+        data.stages.forEach(stageData => {
+            const stageNumber = stageData.stage;
+            const questions = stageData.questions || [];
+            const completed = questions.filter(q => q.completed === true).length;
+            const total = 5;
+
+            const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+            const bar = document.querySelector('.progress-bar');
+
+            console.log("Бар:", bar, "Процент:", percent);
+
+            if (!bar) {
+                console.warn(`Progress bar for stage ${stageNumber} not found`);
+                return;
+            }
+
+            bar.style.width = percent + "%";
+            bar.textContent = percent + "%";
         });
 
-        const percent = totalQuestions === 0 ? 0 : Math.round((completedQuestions / totalQuestions) * 100);
-
-        const progressBar = document.getElementById("progress-bar");
-        const progressText = document.getElementById("progress-text");
-
-        progressBar.style.width = percent + "%";
-        progressText.textContent = percent + "%";
     } catch (err) {
         console.error("Ошибка загрузки прогресса:", err);
     }
 }
 
+
 document.addEventListener("DOMContentLoaded", loadProgress);
+
