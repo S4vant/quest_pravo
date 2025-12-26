@@ -486,3 +486,8 @@ body {
 .feedback.error {
     color: red;
 }
+.stage-sidebar a {
+    text-decoration: none; /* Убирает подчеркивание */
+    color: inherit;        /* Берет цвет текста у тега <p> */
+    
+}

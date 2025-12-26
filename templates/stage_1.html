@@ -9,16 +9,17 @@
 <body>
     <!-- Левая боковая панель -->
     <div class="stage-sidebar">
-        <a href="/api/profile"><i class="fas fa-user"></i> Вернуться в профиль</a>
-        <p><strong>Этап 1:</strong> Соберите определение трудового права</p>
-        <p>Этап 2: Метод трудового права</p>
+    <p><a href="/api/profile"><i class="fas fa-user"></i> Вернуться в профиль</a></p>
+    <p><a href="/stage/1"><strong>Этап 1:</strong> Соберите определение трудового права</a></p>
+    <p><a href="/stage/2">Этап 2: Метод трудового права</a></p>
+    <p><a href="/stage/3">Этап 3: Правила трудового законодательства</a></p>
     </div>
 
     <div class="container">
         <!-- Первое задание -->
         <section class="stage" id="stage-1" data-attempt-id="{{ attempt_id }}">
             <div class="stage-header">
-                Этап 1: Соберите определение трудового права
+                Вопрос 1: Соберите определение трудового права
             </div>
             <div class="stage-content">
                 <div class="instructions">
@@ -51,7 +52,7 @@
         <!-- Второе задание -->
         <section id="stage1-q2" class="stage card fade-in" data-attempt-id="{{ attempt_id }}">
             <div class="stage-header">
-                Этап 2: Расставьте блоки метода трудового права
+                Вопрос 2: Расставьте блоки метода трудового права
             </div>
             <div class="stage-content">
                 <div class="instructions">
@@ -76,7 +77,7 @@
         </section>
         <section class="stage" id="stage-3" data-attempt-id="{{ attempt_id }}">
     <div class="stage-header">
-        Этап 3: Принципы трудового права
+        Вопрос 3: Принципы трудового права
     </div>
 
     <div class="stage-content">
@@ -110,7 +111,7 @@
 </section>
 <section class="stage" id="stage-4" >
     <div class="stage-header">
-        Этап 4: Соотнесите нарушения трудового права с ситуациями
+        Вопрос 4: Соотнесите нарушения трудового права с ситуациями
     </div>
 
     <div class="stage-content">
@@ -146,7 +147,7 @@
 <!-- Этап 5: Сетка с источниками трудового права -->
 <section class="stage" id="stage-5" >
     <div class="stage-header">
-        Этап 5: Найдите источники трудового права в сетке
+        Вопрос 5: Найдите источники трудового права в сетке
     </div>
     <div class="stage-content">
         <div class="instructions">
@@ -180,12 +181,12 @@
 </section>
     </div>
 
-    <script src="/static/js/stage1_q1.js"></script>
-    <script src="/static/js/stage1_q2.js"></script>
+    <script src="/static/js/stage1/stage1_q1.js"></script>
+    <script src="/static/js/stage1/stage1_q2.js"></script>
     <script src="/static/js/game-engine.js"></script>
-    <script src="/static/js/stage1_q3.js"></script>
-    <script src="/static/js/stage1_q4.js"></script>
-    <script src="/static/js/stage1_q5.js"></script>
+    <script src="/static/js/stage1/stage1_q3.js"></script>
+    <script src="/static/js/stage1/stage1_q4.js"></script>
+    <script src="/static/js/stage1/stage1_q5.js"></script>
 
 </body>
 </html>

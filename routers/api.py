@@ -193,9 +193,11 @@ async def user_progress(
     request: Request, 
     db: Session = Depends(get_db)
 ):
+    
     Attempt_id = request.session.get("attempt_id")
-
+    user_id = request.session.get("user_id")
     attempd = db.query(Attempt).filter_by(id=Attempt_id).first()
+    
     # Получаем все ответы пользователя
     logs = db.query(AnswerLog).filter(AnswerLog.attempt_id == attempd.id).all()
 
@@ -208,4 +210,6 @@ async def user_progress(
 
     stages = [{"stage": stage, "questions": qs} for stage, qs in stages_dict.items()]
     print(stages)
+    data = request.session.get("user_id")
+    print(data)
     return {"stages": stages}

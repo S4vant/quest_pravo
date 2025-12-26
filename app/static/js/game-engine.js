@@ -75,7 +75,7 @@ let attemptId = null;
 async function loadProfile() {
     const name = document.getElementById("name")?.value.trim();
     const email = document.getElementById("email")?.value.trim();
-
+  
     if (!name || !email) {
         document.getElementById("form-error").innerText = "Заполните ФИО и email";
         return;
@@ -86,7 +86,13 @@ async function loadProfile() {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ full_name: name, email })
     });
-
+    const res = await fetch("/api/start_attempt", {
+        method: "POST"
+    });  
+    const data = await res.json();
+    if (data.error) {
+        alert(data.error);
+    }
     // ⬅️ сразу в профиль
     window.location.href = "/api/profile";
 }
@@ -148,6 +154,39 @@ function logAnswer(questionNumber, isCorrect) {
     });
 }
 
+// async function loadProgress() {
+//     try {
+        
+//         const res = await fetch("/api/user/progress");
+//         const data = await res.json();
+
+//         if (!data.stages || !Array.isArray(data.stages)) return;
+
+//         data.stages.forEach(stageData => {
+//             const stageNumber = stageData.stage;
+//             const questions = stageData.questions || [];
+//             const completed = questions.filter(q => q.completed === true).length;
+//             const total = 5;
+
+//             const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+//             const bar = document.querySelector('.progress-bar');
+
+//             console.log("Бар:", bar, "Процент:", percent);
+
+//             if (!bar) {
+//                 console.warn(`Progress bar for stage ${stageNumber} not found`);
+//                 return;
+//             }
+
+//             bar.style.width = percent + "%";
+//             bar.textContent = percent + "%";
+//         });
+
+//     } catch (err) {
+//         console.error("Ошибка загрузки прогресса:", err);
+//     }
+// }
 async function loadProgress() {
     try {
         const res = await fetch("/api/user/progress");
@@ -156,31 +195,33 @@ async function loadProgress() {
         if (!data.stages || !Array.isArray(data.stages)) return;
 
         data.stages.forEach(stageData => {
-            const stageNumber = stageData.stage;
+            const stageNumber = stageData.stage; // Например: 1, 2 или 3
             const questions = stageData.questions || [];
             const completed = questions.filter(q => q.completed === true).length;
             const total = 5;
 
             const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
-            const bar = document.querySelector('.progress-bar');
-
-            console.log("Бар:", bar, "Процент:", percent);
+            // Ищем бар конкретно для этого этапа. 
+            // Используем шаблонную строку для поиска по ID (например, #progress-stage-1)
+            const bar = document.querySelector(`#progress-stage-${stageNumber}`);
 
             if (!bar) {
-                console.warn(`Progress bar for stage ${stageNumber} not found`);
+                console.warn(`Прогресс-бар для этапа ${stageNumber} не найден (искал #progress-stage-${stageNumber})`);
                 return;
             }
 
             bar.style.width = percent + "%";
             bar.textContent = percent + "%";
+            
+            // Если нужно менять цвет или логировать
+            console.log(`Stage ${stageNumber}: ${percent}%`);
         });
 
     } catch (err) {
         console.error("Ошибка загрузки прогресса:", err);
     }
 }
-
 
 document.addEventListener("DOMContentLoaded", loadProgress);
 

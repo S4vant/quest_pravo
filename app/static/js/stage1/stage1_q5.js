@@ -141,6 +141,7 @@ function checkGridSelectionSources() {
         if (extra.length) msg += `\nЛишние: ${extra.join(', ')}`;
         feedback.className = 'feedback error';
         feedback.textContent = msg;
+        saveResult5(false);
     }
 }
 

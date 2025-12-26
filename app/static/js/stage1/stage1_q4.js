@@ -77,6 +77,7 @@ function checkViolations() {
         feedback.textContent = "✅ Все нарушения определены верно!";
         // тут можно saveResult(stage, q)
     } else {
+        saveResult4(false);
         feedback.className = "feedback error";
         feedback.innerHTML = "❌ Ошибки:<br>" + errors.map(e => `• ${e}`).join("<br>");
     }

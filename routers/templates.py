@@ -25,15 +25,15 @@ def quest(request: Request):
         {"request": request}
                             )
 
-@router.get("/stage/1", response_class=HTMLResponse)
-def stage_1(request: Request):
+@router.get("/stage/{stage_number}", response_class=HTMLResponse)
+def stage_1(request: Request, stage_number: int):
     attempt_id = request.session.get("attempt_id")
 
     if not attempt_id:
         return RedirectResponse("/quest")
-
+    page = f"stage_{stage_number}.html"
     return templates.TemplateResponse(
-        "stage_1.html",
+        page,
         {"request": request}
     )
 

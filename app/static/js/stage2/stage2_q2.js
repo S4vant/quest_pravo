@@ -1,14 +1,14 @@
-const METHOD_BLOCKS = [
-    "Имеет смешанный характер",
-    "Сочетание централизованного и локального регулирования",
-    "Сочетание нормативного и договорного регулирования",
-    "Договорный характер установления условий труда"
+const METHOD_CORRECT = [
+    "Смешанный характер метода",
+    "Сочетание государственного регулирования",
+    "И договорного начала",
+    "Установление обязательных гарантий государством"
 ];
 
-const DISTRACTORS_Q2 = [
-    "Полное централизованное регулирование",
-    "Полное локальное регулирование",
-    "Только договорное регулирование"
+const METHOD_DISTRACTORS = [
+    "Полная свобода без правовых ограничений",
+    "Исключительно частное регулирование",
+    "Отсутствие государственных гарантий"
 ];
 // const IS_MOBILE = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
@@ -25,19 +25,6 @@ function shuffle(array) {
     return [...array].sort(() => Math.random() - 0.5);
 }
 
-// function initStage2() {
-//     const bank = document.getElementById("blocks-container-q2");
-//     const allBlocks = shuffle([...METHOD_BLOCKS, ...DISTRACTORS_Q2]);
-//     bank.innerHTML = '';
-//     allBlocks.forEach(text => {
-//         const block = document.createElement("div");
-//         block.className = "draggable block";
-//         block.draggable = true;
-//         block.textContent = text;
-//         block.dataset.correct = METHOD_BLOCKS.includes(text) ? "true" : "false";
-//         bank.appendChild(block);
-//     });
-// }
 
 function initStage2() {
     const bank = document.getElementById("blocks-container-q2");
@@ -48,7 +35,7 @@ function initStage2() {
         return;
     }
 
-    let allBlocks = shuffle([...METHOD_BLOCKS, ...DISTRACTORS_Q2]);
+    let allBlocks = shuffle([...METHOD_CORRECT, ...METHOD_DISTRACTORS]);
     bank.innerHTML = '';
     dropZone.innerHTML = '';
 
@@ -56,7 +43,7 @@ function initStage2() {
         const block = document.createElement('div');
         block.className = 'block';
         block.textContent = text;
-        block.dataset.correct = METHOD_BLOCKS.includes(text) ? "true" : "false";
+        block.dataset.correct = METHOD_CORRECT.includes(text) ? "true" : "false";
 
         block.addEventListener('click', () => {
             if (block.parentElement === bank) {
@@ -88,7 +75,7 @@ function setupDragAndDropQ2() {
     document.addEventListener("dragend", e => {
         if (draggedBlockQ2) {
             draggedBlockQ2.classList.remove("dragging");
-            draggedBlockQ2.style.opacity = "1";
+
             draggedBlockQ2 = null;
         }
     });
@@ -96,13 +83,13 @@ function setupDragAndDropQ2() {
     document.addEventListener("dragover", e => {
         e.preventDefault();
         if (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone")) {
-            e.target.style.backgroundColor = "#e0f0ff";
+
         }
     });
 
     document.addEventListener("dragleave", e => {
         if (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone")) {
-            e.target.style.backgroundColor = "#f8fafc";
+
         }
     });
 
@@ -111,7 +98,7 @@ function setupDragAndDropQ2() {
         if (draggedBlockQ2 && (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone"))) {
             e.target.appendChild(draggedBlockQ2);
             draggedBlockQ2 = null;
-            e.target.style.backgroundColor = "#f8fafc";
+
         }
     });
 }
@@ -129,16 +116,18 @@ async function checkStage2() {
 
     if (blocks.length === 0) {
         feedback.style.color = "red";
+
         feedback.textContent = "❌ Поле пусто. Расставьте блоки в последовательность.";
+        await saveResult2(false);
         return;
     }
 
     const arrangedBlocks = blocks.filter(b => b.dataset.correct === "true").map(b => b.textContent.trim());
 
-    let isCorrect = arrangedBlocks.length === METHOD_BLOCKS.length;
+    let isCorrect = arrangedBlocks.length === METHOD_CORRECT.length;
     if (isCorrect) {
-        for (let i = 0; i < METHOD_BLOCKS.length; i++) {
-            if (arrangedBlocks[i] !== METHOD_BLOCKS[i]) {
+        for (let i = 0; i < METHOD_CORRECT.length; i++) {
+            if (arrangedBlocks[i] !== METHOD_CORRECT[i]) {
                 isCorrect = false;
                 break;
             }
@@ -158,12 +147,12 @@ async function saveResult2(isCorrect) {
         // const attemptId = window.attemptId; // или data-атрибут
         // if (!attemptId) throw new Error("Не найден attempt_id");
 
-        const res = await fetch("/api/stage/1/q/2", {
+        const res = await fetch("/api/stage/2/q/2", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 attempt_id: attemptId,
-                stage_number: 1,
+                stage_number: 2,
                 question_number: 2,
                 correct: isCorrect
             })

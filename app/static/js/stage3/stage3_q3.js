@@ -1,17 +1,14 @@
-const PRINCIPLES_CORRECT = [
-    "Свобода труда",
-    "Запрет принудительного труда",
-    "Запрет дискриминации в сфере труда",
-    "Равенство прав и возможностей работников",
-    "Обеспечение права каждого на справедливые условия труда"
+const RIGHTS_PROTECTION_CORRECT = [
+    "Обращение в суд",
+    "Государственная инспекция труда",
+    "Профсоюзная защита",
+    "Использование онлайн-сервисов и жалоб"
 ];
 
-const PRINCIPLES_DISTRACTORS = [
-    "Обязанность работать по настроению работодателя",
-    "Принцип утреннего кофе на рабочем месте",
-    "Свобода увольнения без объяснений",
-    "Право работодателя кричать в понедельник",
-    "Обязательный сверхурочный энтузиазм"
+const RIGHTS_PROTECTION_DISTRACTORS = [
+    "Публичный конфликт в соцсетях",
+    "Игнорирование нарушения",
+    "Самовольное прекращение работы без уведомления"
 ];
 
 
@@ -25,7 +22,7 @@ function initStage3() {
 
     if (!bank || !drop) return;
 
-    let all = shuffle([...PRINCIPLES_CORRECT, ...PRINCIPLES_DISTRACTORS]);
+    let all = shuffle([...RIGHTS_PROTECTION_CORRECT, ...RIGHTS_PROTECTION_DISTRACTORS]);
     bank.innerHTML = '';
     drop.innerHTML = '';
 
@@ -33,7 +30,7 @@ function initStage3() {
         const block = document.createElement('div');
         block.className = 'block';
         block.textContent = text;
-        block.dataset.correct = PRINCIPLES_CORRECT.includes(text) ? 'true' : 'false';
+        block.dataset.correct = RIGHTS_PROTECTION_CORRECT.includes(text) ? 'true' : 'false';
 
         // ТАП-КЛИК (мобилка)
         block.addEventListener('click', () => {
@@ -56,17 +53,18 @@ function checkPrinciples() {
     const feedback = document.getElementById('principles-feedback');
     const blocks = Array.from(drop.querySelectorAll('.block')).map(b => b.textContent.trim());
 
-    if (blocks.length !== PRINCIPLES_CORRECT.length) {
+    if (blocks.length !== RIGHTS_PROTECTION_CORRECT.length) {
         feedback.className = 'feedback error';
         feedback.textContent =
-            blocks.length < PRINCIPLES_CORRECT.length
-                ? `❌ Недостаточно принципов (${blocks.length} из ${PRINCIPLES_CORRECT.length})`
-                : `❌ Лишние элементы (${blocks.length} вместо ${PRINCIPLES_CORRECT.length})`;
+            blocks.length < RIGHTS_PROTECTION_CORRECT.length
+                ? `❌ Недостаточно принципов (${blocks.length} из ${RIGHTS_PROTECTION_CORRECT.length})`
+                : `❌ Лишние элементы (${blocks.length} вместо ${RIGHTS_PROTECTION_CORRECT.length})`;
+        saveResult3(false);
         return;
     }
 
     const selected = new Set(blocks);
-    const required = new Set(PRINCIPLES_CORRECT);
+    const required = new Set(RIGHTS_PROTECTION_CORRECT);
 
     const missing = [...required].filter(x => !selected.has(x));
     const extra = [...selected].filter(x => !required.has(x));
@@ -77,13 +75,14 @@ function checkPrinciples() {
         if (extra.length) msg += `Лишние: ${extra.join(', ')}`;
         feedback.className = 'feedback error';
         feedback.textContent = msg;
+        saveResult3(false);
         return;
     }
     saveResult3(true);
     feedback.className = 'feedback success';
     feedback.textContent = '✅ Все принципы трудового права выбраны верно!';
     document.getElementById('check-principles-btn').disabled = true;
-    document.getElementById('stage-4').classList.add('completed');
+    document.getElementById('stage-3').classList.add('completed');
 
     // тут можешь сохранить результат
 }
@@ -94,12 +93,12 @@ async function saveResult3(isCorrect) {
         // const attemptId = window.attemptId; // или data-атрибут
         // if (!attemptId) throw new Error("Не найден attempt_id");
 
-        const res = await fetch("/api/stage/1/q/3", {
+        const res = await fetch("/api/stage/3/q/3", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 attempt_id: attemptId,
-                stage_number: 1,
+                stage_number: 3,
                 question_number: 3,
                 correct: isCorrect
             })

@@ -140,6 +140,7 @@ async function checkDefinition() {
     if (blocks.length === 0) {
         feedback.className = 'feedback error';
         feedback.textContent = '❌ Поле пусто. Соберите определение.';
+        await saveResult(false);
         return;
     }
 
@@ -148,6 +149,7 @@ async function checkDefinition() {
         feedback.textContent = blocks.length < LABOUR_LAW_DEFINITION.length
             ? `❌ Недостаточно фрагментов (${blocks.length} вместо ${LABOUR_LAW_DEFINITION.length}).`
             : `❌ Слишком много фрагментов (${blocks.length} вместо ${LABOUR_LAW_DEFINITION.length}).`;
+            await saveResult(false);
         return;
     }
 
