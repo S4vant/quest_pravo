@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from ..app.schemas import StartQuest, AnswerData
+from ..app.schemas import StartQuest, AnswerData, QuestionResult
 from ..app.db import get_db
 from ..app.models import User, Attempt, AnswerLog
 
@@ -119,25 +119,23 @@ def save_answer(
 async def log_answer(
     stage_number: int,
     question_number: int,
+    data: QuestionResult,  
     request: Request,
-    data: dict,
-    wasted_time: int,
     db: Session = Depends(get_db)
 ):
-    print(request.get("wasted_time"))
-    answer = AnswerData(
-        attempt_id=request.session.get("attempt_id"),
-        stage_number=stage_number,
-        question_number=question_number,
-        wasted_time=wasted_time,
-        correct=data.get("correct")
+    print(data)
+    attempt_id=request.session.get("attempt_id")
+    answer = QuestionResult(
+        wasted_time=data.wasted_time,
+        correct=data.correct
     )
     # Проверяем, есть ли уже запись
 
     existing = db.query(AnswerLog).filter(
-        AnswerLog.attempt_id == answer.attempt_id,
-        AnswerLog.stage_number == answer.stage_number,
-        AnswerLog.question_number == answer.question_number
+        AnswerLog.attempt_id == attempt_id,
+        AnswerLog.stage_number == stage_number,
+        AnswerLog.question_number == question_number,
+        AnswerLog.wasted_time < answer.wasted_time
     ).first()
 
     if existing:
@@ -146,12 +144,16 @@ async def log_answer(
             existing.is_correct = True
             db.commit()
         # Иначе ничего не делаем (не создаем новый)
+        elif existing.wasted_time:
+            existing.wasted_time = answer.wasted_time
+            db.commit()
+
     else:
         # Создаем новую запись
         new_log = AnswerLog(
-            attempt_id=answer.attempt_id,
-            stage_number=answer.stage_number,
-            question_number=answer.question_number,
+            attempt_id=attempt_id,
+            stage_number=stage_number,
+            question_number=question_number,
             is_correct=answer.correct,
             wasted_time=answer.wasted_time,
         )
@@ -166,7 +168,6 @@ async def user_progress(
 ):
     
     Attempt_id = request.session.get("attempt_id")
-    user_id = request.session.get("user_id")
     attempd = db.query(Attempt).filter_by(id=Attempt_id).first()
     
     # Получаем все ответы пользователя
@@ -176,7 +177,8 @@ async def user_progress(
     for log in logs:
         stages_dict.setdefault(log.stage_number, []).append({
             "q": log.question_number,
-            "completed": log.is_correct
+            "completed": log.is_correct,
+            "wasted_time": log.wasted_time
         })
 
     stages = [{"stage": stage, "questions": qs} for stage, qs in stages_dict.items()]
@@ -184,3 +186,11 @@ async def user_progress(
     data = request.session.get("user_id")
     print(data)
     return {"stages": stages}
+
+@router.post("/logout")
+async def logout(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    request.session.clear()
+    return {"ok": True}

@@ -1,0 +1,42 @@
+.task-content {
+    position: relative;
+}
+
+.task-timer {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+
+.record-celebration {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.record-box {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 16px;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    animation: pop 0.6s ease;
+}
+
+@keyframes pop {
+    0% { transform: scale(0.6); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}

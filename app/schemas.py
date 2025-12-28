@@ -32,12 +32,10 @@ class StageComplete(BaseModel):
     stage_number: int
 
 class QuestionResult(BaseModel):
-    attempt_id: int
+    wasted_time: int
     correct: bool
 
 class AnswerData(BaseModel):
-    attempt_id: int
-    stage_number: int
-    question_number: int
+    
     correct: bool
     wasted_time: int

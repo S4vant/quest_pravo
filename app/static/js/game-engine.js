@@ -222,6 +222,19 @@ async function loadProgress() {
         console.error("Ошибка загрузки прогресса:", err);
     }
 }
+function showRecordCelebration(oldTime, newTime) {
+    const el = document.getElementById('record-celebration');
+    const text = el.querySelector('.record-time');
+
+    text.textContent = `Было: ${oldTime}с → Стало: ${newTime}с`;
+
+    el.classList.remove('hidden');
+
+    setTimeout(() => {
+        el.classList.add('hidden');
+    }, 3000);
+}
+
 
 document.addEventListener("DOMContentLoaded", loadProgress);
 

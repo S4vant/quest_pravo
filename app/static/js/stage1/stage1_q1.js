@@ -16,16 +16,22 @@ const LABOUR_LAW_DISTRACTORS = [
     "возникающие в процессе производства"
 ];
 const IS_MOBILE = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+let draggedBlock = null;
 
 let taskStartedAt = null;
+let timerInterval = null;
 let taskUnlocked = false;
+const wrapper = document.querySelector('.stage-content');
 
-let draggedBlock = null;
+const stage = Number(wrapper.dataset.stage);
+const question = Number(wrapper.dataset.question);
 document.addEventListener('DOMContentLoaded', () => {
     initTaskWrapper();
     initStage1();
     setupDragAndDrop();
 });
+
+
 
 function shuffle(array) {
     return [...array].sort(() => Math.random() - 0.5);
@@ -88,8 +94,10 @@ function initTaskWrapper() {
                 cover.classList.add('hidden');
                 content.classList.remove('hidden');
 
-                taskStartedAt = Date.now();   // ⏱ фиксируем старт
+                taskStartedAt = Date.now();
                 taskUnlocked = true;
+
+                startLiveTimer(); 
             }
         }, 1000);
     });
@@ -115,28 +123,6 @@ function setupDragAndDrop() {
             draggedBlock = null;
         }
     });
-
-    document.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        if (e.target.classList.contains('drop-zone')) {
-            // e.target.style.backgroundColor = '#e0f0ff';
-        }
-    });
-
-    document.addEventListener('dragleave', (e) => {
-        if (e.target.classList.contains('drop-zone')) {
-            // e.target.style.backgroundColor = '#f8fafc';
-        }
-    });
-
-    document.addEventListener('drop', (e) => {
-        e.preventDefault();
-        if (draggedBlock && e.target.classList.contains('drop-zone')) {
-            e.target.appendChild(draggedBlock);
-            draggedBlock = null;
-            // e.target.style.backgroundColor = '#f8fafc';
-        }
-    });
 }
 
 function clearDropZone(zoneId) {
@@ -145,6 +131,39 @@ function clearDropZone(zoneId) {
 
     Array.from(zone.children).forEach(block => bank.appendChild(block));
 }
+function startLiveTimer() {
+    const timerEl = document.getElementById('task-timer');
+    if (!timerEl) return;
+
+    clearInterval(timerInterval);
+
+    timerInterval = setInterval(() => {
+        if (!taskStartedAt) return;
+
+        const seconds = Math.floor((Date.now() - taskStartedAt) / 1000);
+        const min = Math.floor(seconds / 60);
+        const sec = seconds % 60;
+
+        timerEl.textContent = `⏱ ${min}:${sec.toString().padStart(2, '0')}`;
+    }, 500);
+}
+async function getBestTime(stage, question) {
+    try {
+        const res = await fetch("/api/user/progress");
+        const data = await res.json();
+
+        const stageData = data.stages?.find(s => s.stage === stage);
+        if (!stageData) return null;
+
+        const qData = stageData.questions?.find(q => q.q === question);
+        if (!qData || qData.wasted_time == null) return null;
+
+        return qData.wasted_time;
+    } catch {
+        return null;
+    }
+}
+
 
 // async function checkDefinition() {
 //     const dropZone = document.getElementById('definition-drop');
@@ -188,12 +207,11 @@ function clearDropZone(zoneId) {
 // }
 
 async function checkDefinition() {
-    if (!taskUnlocked) return;
-
+    if (!taskUnlocked || !taskStartedAt) return;
     const dropZone = document.getElementById('definition-drop');
     const blocks = Array.from(dropZone.querySelectorAll('.block')).map(b => b.textContent.trim());
     const feedback = document.getElementById('definition-feedback');
-
+    const previousBest = await getBestTime(stage, question);
     let isCorrect = false;
 
     if (blocks.length === LABOUR_LAW_DEFINITION.length) {
@@ -207,15 +225,18 @@ async function checkDefinition() {
         ? '✅ Определение составлено верно'
         : '❌ Формулировка неверна';
 
-    document.getElementById('check-definition-btn').disabled = true;
+    // document.getElementById('check-definition-btn').disabled = true;
+    clearInterval(timerInterval);
+    
+
+    if (previousBest !== null && wastedTime < previousBest && isCorrect) {
+        showRecordCelebration(previousBest, wastedTime);
+        }
 
     await saveResult(isCorrect);
 }
 async function saveResult(isCorrect) {
-    const wrapper = document.querySelector('.stage-content');
-
-    const stage = Number(wrapper.dataset.stage);
-    const question = Number(wrapper.dataset.question);
+    
 
     const wastedTime = Math.floor((Date.now() - taskStartedAt) / 1000); // в секундах
     console.log(wastedTime);
