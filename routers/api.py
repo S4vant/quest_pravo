@@ -79,7 +79,7 @@ def save_answer(
     question_number: int,
     request: Request,
     data: dict,
-    wasted_time: int,
+    
     db: Session = Depends(get_db)
 ):
     """
@@ -104,7 +104,6 @@ def save_answer(
         stage_number=stage_number,
         question_number=question_number,
         is_correct=is_correct,
-        wasted_time=wasted_time,
         created_at=datetime.utcnow()
     )
     istrue = not(db.query(AnswerLog).filter_by(attempt_id=attempt.id, stage_number=stage_number, question_number=question_number).first())
@@ -122,12 +121,15 @@ async def log_answer(
     question_number: int,
     request: Request,
     data: dict,
+    wasted_time: int,
     db: Session = Depends(get_db)
 ):
+    print(request.get("wasted_time"))
     answer = AnswerData(
         attempt_id=request.session.get("attempt_id"),
         stage_number=stage_number,
         question_number=question_number,
+        wasted_time=wasted_time,
         correct=data.get("correct")
     )
     # Проверяем, есть ли уже запись
@@ -150,7 +152,8 @@ async def log_answer(
             attempt_id=answer.attempt_id,
             stage_number=answer.stage_number,
             question_number=answer.question_number,
-            is_correct=answer.correct
+            is_correct=answer.correct,
+            wasted_time=answer.wasted_time,
         )
         db.add(new_log)
         db.commit()

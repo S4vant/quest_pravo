@@ -225,6 +225,9 @@ async function saveResult(isCorrect) {
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 correct: isCorrect,
+                stage_number: stage,
+                question_number: question,
+                correct: isCorrect,
                 wasted_time: wastedTime
             })
         });
