@@ -4,9 +4,9 @@ from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from ..app.schemas import StartQuest, StageComplete, AnswerData
+from ..app.schemas import StartQuest, AnswerData
 from ..app.db import get_db
-from ..app.models import User, Attempt, StageProgress, AnswerLog
+from ..app.models import User, Attempt, AnswerLog
 
 templates = Jinja2Templates(directory="templates")
 router = APIRouter(tags=["api"], prefix="/api")
@@ -73,34 +73,13 @@ def start_attempt(request: Request, db: Session = Depends(get_db)):
     return {"ok": True}
 
 
-@router.post("/stage/complete")
-def complete_stage(data: StageComplete, request: Request, db: Session = Depends(get_db)):
-    """
-    Завершаем этап. Используем attempt_id из сессии, если не передано.
-    """
-    attempt_id = data.attempt_id or request.session.get("attempt_id")
-    if not attempt_id:
-        return JSONResponse({"error": "Attempt не найден"}, status_code=400)
-
-    stage = db.query(StageProgress).filter_by(attempt_id=attempt_id, stage_number=data.stage_number).first()
-    if not stage:
-        # создаем запись если её нет
-        stage = StageProgress(attempt_id=attempt_id, stage_number=data.stage_number)
-
-    stage.status = "completed"
-    stage.finished_at = datetime.datetime.utcnow()
-    db.add(stage)
-    db.commit()
-
-    return {"ok": True}
-
-
 
 def save_answer(
     stage_number: int,
     question_number: int,
     request: Request,
     data: dict,
+    wasted_time: int,
     db: Session = Depends(get_db)
 ):
     """
@@ -125,24 +104,13 @@ def save_answer(
         stage_number=stage_number,
         question_number=question_number,
         is_correct=is_correct,
+        wasted_time=wasted_time,
         created_at=datetime.utcnow()
     )
     istrue = not(db.query(AnswerLog).filter_by(attempt_id=attempt.id, stage_number=stage_number, question_number=question_number).first())
     db.add(log)
     if istrue:
        
-    # увеличиваем total_score если ответ верный
-        if is_correct:
-            attempt.total_score += 1
-
-    # обновляем прогресс этапа
-        stage = db.query(StageProgress).filter_by(
-            attempt_id=attempt.id,
-            stage_number=stage_number
-        ).first()
-        if stage:
-            stage.status = "completed" if is_correct else stage.status
-            stage.finished_at = datetime.utcnow() if is_correct else stage.finished_at
 
         db.commit()
 

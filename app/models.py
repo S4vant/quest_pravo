@@ -34,40 +34,12 @@ class Attempt(Base):
 
     user = relationship("User", back_populates="attempts")
 
-    # Прогресс этапов
-    stage_progress = relationship(
-        "StageProgress",
-        back_populates="attempt",
-        cascade="all, delete-orphan"
-    )
-
-    # Итог этапов
-    stage_results = relationship(
-        "StageResult",
-        back_populates="attempt",
-        cascade="all, delete-orphan"
-    )
-
     answers = relationship(
         "AnswerLog",
         back_populates="attempt",
         cascade="all, delete-orphan"
     )
 
-class StageResult(Base):
-    __tablename__ = "stage_results"
-
-    id = Column(Integer, primary_key=True)
-    attempt_id = Column(Integer, ForeignKey("attempts.id"))
-
-    stage_number = Column(Integer)
-    stage_title = Column(String)
-    score = Column(Integer)
-
-    attempt = relationship(
-        "Attempt",
-        back_populates="stage_results"
-    )
 
 class AnswerLog(Base):
     __tablename__ = "answer_logs"
@@ -78,7 +50,7 @@ class AnswerLog(Base):
 
     stage_number = Column(Integer)
     question_number = Column(Integer)
-
+    wasted_time = Column(Integer)
     is_correct = Column(Boolean)
 
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -88,33 +60,3 @@ class AnswerLog(Base):
         back_populates="answers"
     )
 
-
-class StageProgress(Base):
-    __tablename__ = "stage_progress"
-
-    id = Column(Integer, primary_key=True)
-    attempt_id = Column(Integer, ForeignKey("attempts.id"))
-    stage_number = Column(Integer)
-
-    status = Column(String, default="open")
-    score = Column(Integer, default=0)
-
-    started_at = Column(DateTime, default=datetime.utcnow)
-    finished_at = Column(DateTime, nullable=True)
-
-    attempt = relationship(
-        "Attempt",
-        back_populates="stage_progress"
-    )
-
-# class AttemptAnswer(Base):
-#     __tablename__ = "attempt_answers"
-
-#     id = Column(Integer, primary_key=True)
-#     attempt_id = Column(Integer, ForeignKey("attempts.id"), nullable=False)
-
-#     stage = Column(Integer, nullable=False)  # 1,2,3...
-#     is_correct = Column(Boolean, nullable=False)
-#     payload = Column(JSON, nullable=False)
-
-#     created_at = Column(DateTime, default=datetime.utcnow)

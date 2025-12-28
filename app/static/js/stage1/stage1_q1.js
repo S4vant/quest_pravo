@@ -17,10 +17,12 @@ const LABOUR_LAW_DISTRACTORS = [
 ];
 const IS_MOBILE = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
+let taskStartedAt = null;
+let taskUnlocked = false;
 
 let draggedBlock = null;
-
 document.addEventListener('DOMContentLoaded', () => {
+    initTaskWrapper();
     initStage1();
     setupDragAndDrop();
 });
@@ -29,25 +31,7 @@ function shuffle(array) {
     return [...array].sort(() => Math.random() - 0.5);
 }
 
-// function initStage1() {
-//     const bank = document.getElementById('definition-bank');
-//     let allBlocks = shuffle([...LABOUR_LAW_DEFINITION, ...LABOUR_LAW_DISTRACTORS]);
-//     bank.innerHTML = '';
-//     allBlocks.forEach((text, i) => {
-//         const block = document.createElement('div');
-//         block.className = 'block';
-//         // block.draggable = true;
-//         block.textContent = text;
-//         block.addEventListener('click', () => {
-//             if (block.parentElement.id === 'definition-bank') {
-//                 drop.appendChild(block);
-//             } else {
-//                 bank.appendChild(block);
-//             }
-//         });
-//         bank.appendChild(block);
-//     });
-// }
+
 
 function initStage1() {
     const bank = document.getElementById('definition-bank');
@@ -81,6 +65,36 @@ function initStage1() {
     });
 }
 
+function initTaskWrapper() {
+    const startBtn = document.getElementById('start-task-btn');
+    const timerEl = document.getElementById('start-timer');
+    const cover = document.getElementById('task-cover');
+    const content = document.getElementById('task-content');
+
+    startBtn.addEventListener('click', () => {
+        startBtn.disabled = true;
+        timerEl.classList.remove('hidden');
+
+        let timeLeft = 3;
+        timerEl.textContent = timeLeft;
+
+        const interval = setInterval(() => {
+            timeLeft--;
+            timerEl.textContent = timeLeft;
+
+            if (timeLeft === 0) {
+                clearInterval(interval);
+
+                cover.classList.add('hidden');
+                content.classList.remove('hidden');
+
+                taskStartedAt = Date.now();   // ⏱ фиксируем старт
+                taskUnlocked = true;
+            }
+        }, 1000);
+    });
+}
+
 function moveBlock(block, dropId) {
     const dropZone = document.getElementById(dropId);
     dropZone.appendChild(block);
@@ -105,13 +119,13 @@ function setupDragAndDrop() {
     document.addEventListener('dragover', (e) => {
         e.preventDefault();
         if (e.target.classList.contains('drop-zone')) {
-            e.target.style.backgroundColor = '#e0f0ff';
+            // e.target.style.backgroundColor = '#e0f0ff';
         }
     });
 
     document.addEventListener('dragleave', (e) => {
         if (e.target.classList.contains('drop-zone')) {
-            e.target.style.backgroundColor = '#f8fafc';
+            // e.target.style.backgroundColor = '#f8fafc';
         }
     });
 
@@ -120,7 +134,7 @@ function setupDragAndDrop() {
         if (draggedBlock && e.target.classList.contains('drop-zone')) {
             e.target.appendChild(draggedBlock);
             draggedBlock = null;
-            e.target.style.backgroundColor = '#f8fafc';
+            // e.target.style.backgroundColor = '#f8fafc';
         }
     });
 }
@@ -132,57 +146,94 @@ function clearDropZone(zoneId) {
     Array.from(zone.children).forEach(block => bank.appendChild(block));
 }
 
+// async function checkDefinition() {
+//     const dropZone = document.getElementById('definition-drop');
+//     const blocks = Array.from(dropZone.querySelectorAll('.block')).map(b => b.textContent.trim());
+//     const feedback = document.getElementById('definition-feedback');
+
+//     if (blocks.length === 0) {
+//         feedback.className = 'feedback error';
+//         feedback.textContent = '❌ Поле пусто. Соберите определение.';
+//         await saveResult(false);
+//         return;
+//     }
+
+//     if (blocks.length !== LABOUR_LAW_DEFINITION.length) {
+//         feedback.className = 'feedback error';
+//         feedback.textContent = blocks.length < LABOUR_LAW_DEFINITION.length
+//             ? `❌ Недостаточно фрагментов (${blocks.length} вместо ${LABOUR_LAW_DEFINITION.length}).`
+//             : `❌ Слишком много фрагментов (${blocks.length} вместо ${LABOUR_LAW_DEFINITION.length}).`;
+//             await saveResult(false);
+//         return;
+//     }
+
+//     const isCorrect = LABOUR_LAW_DEFINITION.every((part, i) => blocks[i] === part.trim());
+
+//     if (isCorrect) {
+//         feedback.className = 'feedback success';
+//         feedback.textContent = '✅ Определение составлено верно';
+//         document.getElementById('check-definition-btn').disabled = true;
+
+//         // Сохраняем результат на сервер
+//         await saveResult(true);
+
+//         // setTimeout(() => {
+//         //     window.location.href = "/stage/2"; // сервер сам определит attempt через сессию
+//         // }, 1000);
+//     } else {
+//         feedback.className = 'feedback error';
+//         feedback.textContent = '❌ Формулировка не совпадает с определением из лекции.';
+//         await saveResult(false);
+//     }
+// }
+
 async function checkDefinition() {
+    if (!taskUnlocked) return;
+
     const dropZone = document.getElementById('definition-drop');
     const blocks = Array.from(dropZone.querySelectorAll('.block')).map(b => b.textContent.trim());
     const feedback = document.getElementById('definition-feedback');
 
-    if (blocks.length === 0) {
-        feedback.className = 'feedback error';
-        feedback.textContent = '❌ Поле пусто. Соберите определение.';
-        await saveResult(false);
-        return;
+    let isCorrect = false;
+
+    if (blocks.length === LABOUR_LAW_DEFINITION.length) {
+        isCorrect = LABOUR_LAW_DEFINITION.every(
+            (part, i) => blocks[i] === part.trim()
+        );
     }
 
-    if (blocks.length !== LABOUR_LAW_DEFINITION.length) {
-        feedback.className = 'feedback error';
-        feedback.textContent = blocks.length < LABOUR_LAW_DEFINITION.length
-            ? `❌ Недостаточно фрагментов (${blocks.length} вместо ${LABOUR_LAW_DEFINITION.length}).`
-            : `❌ Слишком много фрагментов (${blocks.length} вместо ${LABOUR_LAW_DEFINITION.length}).`;
-            await saveResult(false);
-        return;
-    }
+    feedback.className = `feedback ${isCorrect ? 'success' : 'error'}`;
+    feedback.textContent = isCorrect
+        ? '✅ Определение составлено верно'
+        : '❌ Формулировка неверна';
 
-    const isCorrect = LABOUR_LAW_DEFINITION.every((part, i) => blocks[i] === part.trim());
+    document.getElementById('check-definition-btn').disabled = true;
 
-    if (isCorrect) {
-        feedback.className = 'feedback success';
-        feedback.textContent = '✅ Определение составлено верно';
-        document.getElementById('check-definition-btn').disabled = true;
-
-        // Сохраняем результат на сервер
-        await saveResult(true);
-
-        // setTimeout(() => {
-        //     window.location.href = "/stage/2"; // сервер сам определит attempt через сессию
-        // }, 1000);
-    } else {
-        feedback.className = 'feedback error';
-        feedback.textContent = '❌ Формулировка не совпадает с определением из лекции.';
-        await saveResult(false);
-    }
+    await saveResult(isCorrect);
 }
-
 async function saveResult(isCorrect) {
+    const wrapper = document.querySelector('.stage-content');
+
+    const stage = Number(wrapper.dataset.stage);
+    const question = Number(wrapper.dataset.question);
+
+    const wastedTime = Math.floor((Date.now() - taskStartedAt) / 1000); // в секундах
+    console.log(wastedTime);
     try {
-        const res = await fetch("/api/stage/1/q/1", {
+        const res = await fetch(`/api/stage/${stage}/q/${question}`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({correct: isCorrect})
+            body: JSON.stringify({
+                correct: isCorrect,
+                wasted_time: wastedTime
+            })
         });
+        
         const data = await res.json();
-        if (!data.saved) console.error("Ошибка при сохранении результата");
+        if (!data.saved) {
+            console.error("Не удалось сохранить ответ");
+        }
     } catch (err) {
-        console.error("Ошибка при сохранении результата:", err);
+        console.error("Ошибка сохранения:", err);
     }
 }

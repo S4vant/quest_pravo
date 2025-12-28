@@ -40,3 +40,4 @@ class AnswerData(BaseModel):
     stage_number: int
     question_number: int
     correct: bool
+    wasted_time: int

@@ -83,13 +83,13 @@ function setupDragAndDropQ2() {
     document.addEventListener("dragover", e => {
         e.preventDefault();
         if (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone")) {
-            e.target.style.backgroundColor = "#e0f0ff";
+            // e.target.style.backgroundColor = "#e0f0ff";
         }
     });
 
     document.addEventListener("dragleave", e => {
         if (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone")) {
-            e.target.style.backgroundColor = "#f8fafc";
+            // e.target.style.backgroundColor = "#f8fafc";
         }
     });
 
@@ -98,7 +98,7 @@ function setupDragAndDropQ2() {
         if (draggedBlockQ2 && (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone"))) {
             e.target.appendChild(draggedBlockQ2);
             draggedBlockQ2 = null;
-            e.target.style.backgroundColor = "#f8fafc";
+            // e.target.style.backgroundColor = "#f8fafc";
         }
     });
 }

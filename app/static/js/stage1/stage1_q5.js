@@ -93,7 +93,7 @@ function handleCellClickSources(r, c) {
         const el = document.querySelector(`.grid-cell[data-row="${r}"][data-col="${c}"]`);
         if (el) {
             el.classList.toggle('selected', !isSelected);
-            el.style.backgroundColor = !isSelected ? '#bee3f8' : 'white';
+            // el.style.backgroundColor = !isSelected ? '#bee3f8' : 'white';
         }
     });
 
