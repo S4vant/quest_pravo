@@ -21,21 +21,13 @@ let draggedBlock = null;
 let taskStartedAt = null;
 let timerInterval = null;
 let taskUnlocked = false;
-const wrapper = document.querySelector('.stage-content');
 
-const stage = Number(wrapper.dataset.stage);
-const question = Number(wrapper.dataset.question);
+
 document.addEventListener('DOMContentLoaded', () => {
     initTaskWrapper();
     initStage1();
     setupDragAndDrop();
 });
-
-
-
-function shuffle(array) {
-    return [...array].sort(() => Math.random() - 0.5);
-}
 
 
 
@@ -71,98 +63,11 @@ function initStage1() {
     });
 }
 
-function initTaskWrapper() {
-    const startBtn = document.getElementById('start-task-btn');
-    const timerEl = document.getElementById('start-timer');
-    const cover = document.getElementById('task-cover');
-    const content = document.getElementById('task-content');
 
-    startBtn.addEventListener('click', () => {
-        startBtn.disabled = true;
-        timerEl.classList.remove('hidden');
 
-        let timeLeft = 3;
-        timerEl.textContent = timeLeft;
 
-        const interval = setInterval(() => {
-            timeLeft--;
-            timerEl.textContent = timeLeft;
 
-            if (timeLeft === 0) {
-                clearInterval(interval);
 
-                cover.classList.add('hidden');
-                content.classList.remove('hidden');
-
-                taskStartedAt = Date.now();
-                taskUnlocked = true;
-
-                startLiveTimer(); 
-            }
-        }, 1000);
-    });
-}
-
-function moveBlock(block, dropId) {
-    const dropZone = document.getElementById(dropId);
-    dropZone.appendChild(block);
-}
-function setupDragAndDrop() {
-    document.addEventListener('dragstart', (e) => {
-        if (e.target.classList.contains('block')) {
-            draggedBlock = e.target;
-            e.target.classList.add('dragging');
-            setTimeout(() => e.target.style.opacity = '0.5', 0);
-        }
-    });
-
-    document.addEventListener('dragend', (e) => {
-        if (draggedBlock) {
-            draggedBlock.classList.remove('dragging');
-            draggedBlock.style.opacity = '1';
-            draggedBlock = null;
-        }
-    });
-}
-
-function clearDropZone(zoneId) {
-    const zone = document.getElementById(zoneId);
-    const bank = document.getElementById('definition-bank');
-
-    Array.from(zone.children).forEach(block => bank.appendChild(block));
-}
-function startLiveTimer() {
-    const timerEl = document.getElementById('task-timer');
-    if (!timerEl) return;
-
-    clearInterval(timerInterval);
-
-    timerInterval = setInterval(() => {
-        if (!taskStartedAt) return;
-
-        const seconds = Math.floor((Date.now() - taskStartedAt) / 1000);
-        const min = Math.floor(seconds / 60);
-        const sec = seconds % 60;
-
-        timerEl.textContent = `⏱ ${min}:${sec.toString().padStart(2, '0')}`;
-    }, 500);
-}
-async function getBestTime(stage, question) {
-    try {
-        const res = await fetch("/api/user/progress");
-        const data = await res.json();
-
-        const stageData = data.stages?.find(s => s.stage === stage);
-        if (!stageData) return null;
-
-        const qData = stageData.questions?.find(q => q.q === question);
-        if (!qData || qData.wasted_time == null) return null;
-
-        return qData.wasted_time;
-    } catch {
-        return null;
-    }
-}
 
 
 // async function checkDefinition() {

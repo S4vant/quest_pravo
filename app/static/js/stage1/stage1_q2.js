@@ -13,7 +13,7 @@ const DISTRACTORS_Q2 = [
 // const IS_MOBILE = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
 let draggedBlockQ2 = null;
-
+const IS_MOBILE = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 document.addEventListener("DOMContentLoaded", () => {
     initStage2();
     setupDragAndDropQ2();
@@ -77,28 +77,6 @@ function setupDragAndDropQ2() {
             draggedBlockQ2.classList.remove("dragging");
             draggedBlockQ2.style.opacity = "1";
             draggedBlockQ2 = null;
-        }
-    });
-
-    document.addEventListener("dragover", e => {
-        e.preventDefault();
-        if (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone")) {
-            // e.target.style.backgroundColor = "#e0f0ff";
-        }
-    });
-
-    document.addEventListener("dragleave", e => {
-        if (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone")) {
-            // e.target.style.backgroundColor = "#f8fafc";
-        }
-    });
-
-    document.addEventListener("drop", e => {
-        e.preventDefault();
-        if (draggedBlockQ2 && (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone"))) {
-            e.target.appendChild(draggedBlockQ2);
-            draggedBlockQ2 = null;
-            // e.target.style.backgroundColor = "#f8fafc";
         }
     });
 }
