@@ -10,7 +10,7 @@ import { initTaskWrapper } from './engine/timer.js';
 // import { initStage4 } from './stage1/q4_violations.js';
 // import { initStage5 } from './stage1/q5_grid.js';
 
-
+window.clearDropZone = clearDropZone;
 
 async function loadStage(stage) {
     const res = await fetch(`/static/data/stage_${stage}.json`);

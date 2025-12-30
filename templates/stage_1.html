@@ -29,13 +29,11 @@
                     Перетащите блоки в правильном порядке в поле ниже. Доступны <strong>лишние фрагменты</strong>.<br>
                     Продолжить можно <u>только при точном совпадении формулировки</u>.
                 </div>
-                <div class="task-timer" id="task-timer">
-                    ⏱ 0:00
-                </div>  
+                
                 <div class="task-cover" id="task-cover">
                     <button id="start-task-btn">Начать</button>
                     <div id="start-timer" class="start-timer hidden">3</div>
-                </div>
+                
                 <div class="task-content hidden" id="task-content">
                     <div class="blocks-container" id="definition-bank">
                     <!-- Блоки с фрагментами будут добавлены JS -->
@@ -53,7 +51,7 @@
                 </div>
 
                 </div>
-                
+                </div>
 
                 <div class="citation">
                     Источник: онлайн-лекция «Основы трудового права» от Надежды Развейкиной, к.ю.н., доцент.
@@ -62,26 +60,32 @@
         </section>
 
         <!-- Второе задание -->
-        <section id="stage1-q2" class="stage card fade-in" data-attempt-id="{{ attempt_id }}">
+        <section id="stage1" class="stage card fade-in" data-attempt-id="{{ attempt_id }}">
             <div class="stage-header">
                 Вопрос 2: Расставьте блоки метода трудового права
             </div>
-            <div class="stage-content">
+            <div class="stage-content" data-question="2" data-stage="1">
                 <div class="instructions">
                     <strong>Задание:</strong>Составьте последовательность блоков, относящихся к методу трудового права, как в лекции.
                 </div>
     
 
-                 <div class="blocks-container" id="blocks-container-q2">
+                 <div class="task-cover" id="task-cover">
+                    <button id="start-task-btn">Начать</button>
+                    <div id="start-timer" class="start-timer hidden">3</div>
+                
+                <div class="task-content hidden" id="task-content">
+                    <div class="blocks-container" id="definition-bank">
                     <!-- Блоки с фрагментами будут добавлены JS -->
                 </div>
 
-                <div class="drop-zone" id="stage1-drop-q2">
+                <div class="drop-zone" id="definition-drop">
                     <!-- Пустое поле для перетаскивания -->
                 </div>
 
-                <button id="submit-q2" class="btn primary-btn">Проверить и сохранить</button>
-                <p id="feedback-q2" class="feedback-text"></p>
+                <button id="submit" class="btn primary-btn">Проверить и сохранить</button>
+                <p id="feedback" class="feedback-text"></p>
+                
             </div>
             <div class="citation">
                     Источник: онлайн-лекция «Основы трудового права» от Надежды Развейкиной, к.ю.н., доцент.

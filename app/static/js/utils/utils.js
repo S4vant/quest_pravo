@@ -18,6 +18,27 @@ export function setupDragAndDrop() {
             draggedBlock = null;
         }
     });
+     document.addEventListener("dragover", e => {
+        e.preventDefault();
+        if (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone")) {
+            // e.target.style.backgroundColor = "#e0f0ff";
+        }
+    });
+
+    document.addEventListener("dragleave", e => {
+        if (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone")) {
+            // e.target.style.backgroundColor = "#f8fafc";
+        }
+    });
+
+    document.addEventListener("drop", e => {
+        e.preventDefault();
+        if (draggedBlock && (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone"))) {
+            e.target.appendChild(draggedBlock);
+            draggedBlock = null;
+            // e.target.style.backgroundColor = "#f8fafc";
+        }
+    });
 }
 
 
