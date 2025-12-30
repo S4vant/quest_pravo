@@ -1,10 +1,6 @@
+let draggedBlock = null;
 export function shuffle(array) {
     return [...array].sort(() => Math.random() - 0.5);
-}
-
-export function moveBlock(block, dropId) {
-    const dropZone = document.getElementById(dropId);
-    dropZone.appendChild(block);
 }
 export function setupDragAndDrop() {
     document.addEventListener('dragstart', (e) => {

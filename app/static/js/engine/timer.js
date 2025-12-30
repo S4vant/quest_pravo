@@ -6,7 +6,7 @@ export function startLiveTimer() {
 
     clearInterval(gameState.timerInterval);
 
-    timerInterval = setInterval(() => {
+    gameState.timerInterval = setInterval(() => {
         if (!gameState.taskStartedAt) return;
 
         const seconds = Math.floor((Date.now() - gameState.taskStartedAt) / 1000);
@@ -20,11 +20,6 @@ export function startLiveTimer() {
 export function stopTimer() {
     clearInterval(gameState.timerInterval);
 }
-
-
-
-import { startLiveTimer } from './game-engine.js';
-
 export let taskStartedAt = null;
 export let taskUnlocked = false;
 
@@ -53,7 +48,7 @@ export function initTaskWrapper() {
                 cover.classList.add('hidden');
                 content.classList.remove('hidden');
 
-                taskStartedAt = Date.now();
+                gameState.taskStartedAt = Date.now();
                 taskUnlocked = true;
 
                 startLiveTimer();

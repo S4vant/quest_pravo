@@ -1,8 +1,9 @@
 import { questionHandlers } from './questions/index.js';
 import { gameState } from './engine/state.js';
 import { startLiveTimer } from './engine/timer.js';
-import { IS_MOBILE } from './utils/utils.js';
+import { setupDragAndDrop, IS_MOBILE, clearDropZone } from './utils/utils.js';
 import { initTaskWrapper } from './engine/timer.js';
+
 // import { initQuestion1 } from './stage1/q1_definition.js';
 // import { initStage2 } from './stage1/q2_method.js';
 // import { initStage3 } from './stage1/q3_principles.js';
@@ -17,6 +18,9 @@ async function loadStage(stage) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    initTaskWrapper();
+    setupDragAndDrop();
+
     const wrapper = document.querySelector('.stage-content');
 
     const stage = Number(wrapper.dataset.stage);
@@ -37,5 +41,4 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     gameState.taskStartedAt = Date.now();
     gameState.taskUnlocked = true;
-    startLiveTimer();
 });

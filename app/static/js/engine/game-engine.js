@@ -1,43 +1,30 @@
-import { loadProgress } from '../api/api.js';
-let currentEmail = null;
-let attemptId = null;
-
-
 
 export function showRecordCelebration(oldTime, newTime) {
     const el = document.getElementById('record-celebration');
+    if (!el) return; // ← защита
+
     const text = el.querySelector('.record-time');
+    if (!text) return;
 
     text.textContent = `Было: ${oldTime}с → Стало: ${newTime}с`;
-
     el.classList.remove('hidden');
 
-    setTimeout(() => {
-        el.classList.add('hidden');
-    }, 3000);
+    setTimeout(() => el.classList.add('hidden'), 3000);
 }
 
-
-document.addEventListener("DOMContentLoaded", loadProgress);
-
-export async function saveResult(isCorrect, stage, question, taskStartedAt) {
-    
-
-    const wastedTime = Math.floor((Date.now() - taskStartedAt) / 1000); // в секундах
-    console.log(wastedTime);
+export async function saveResult(isCorrect, stage, question, wastedTime) {
     try {
         const res = await fetch(`/api/stage/${stage}/q/${question}`, {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 correct: isCorrect,
                 stage_number: stage,
                 question_number: question,
-                correct: isCorrect,
                 wasted_time: wastedTime
             })
         });
-        
+
         const data = await res.json();
         if (!data.saved) {
             console.error("Не удалось сохранить ответ");
