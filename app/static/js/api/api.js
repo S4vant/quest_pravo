@@ -87,7 +87,14 @@ export async function loadProgress() {
         data.stages.forEach(stageData => {
             const stageNumber = stageData.stage; // Например: 1, 2 или 3
             const questions = stageData.questions || [];
-            const completed = questions.filter(q => q.completed === true).length;
+            // Подсчитываем количество завершенных уникальных вопросов
+            const completed_array = questions.filter(q => q.completed === true);
+            let completed = 0;
+            for (let i = 1; i < completed_array.length; i++) {
+                if (completed_array[i].completed === true && completed_array[i-1] != completed_array[i]) {
+                    completed++;
+                }
+            }
             const total = 5;
 
             const percent = total === 0 ? 0 : Math.round((completed / total) * 100);

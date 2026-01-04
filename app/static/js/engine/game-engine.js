@@ -1,5 +1,5 @@
 
-export function showRecordCelebration(oldTime, newTime) {
+export async function showRecordCelebration(oldTime, newTime) {
     const el = document.getElementById('record-celebration');
     if (!el) return; // ← защита
 

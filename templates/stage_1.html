@@ -31,15 +31,15 @@
                 </div>
                 
                 <div class="task-cover" id="task-cover">
-                    <button id="start-task-btn">Начать</button>
+                    <button class="start-task-btn">Начать</button>
                     <div id="start-timer" class="start-timer hidden">3</div>
                 
                 <div class="task-content hidden" id="task-content">
-                    <div class="blocks-container" id="definition-bank">
+                    <div class="definition-bank">
                     <!-- Блоки с фрагментами будут добавлены JS -->
                 </div>
 
-                <div class="drop-zone" id="definition-drop">
+                <div class="definition-drop">
                     <!-- Пустое поле для перетаскивания -->
                 </div>
 
@@ -60,7 +60,7 @@
         </section>
 
         <!-- Второе задание -->
-        <section id="stage1" class="stage card fade-in" data-attempt-id="{{ attempt_id }}">
+        <section class="stage" id="stage-2" data-attempt-id="{{ attempt_id }}" >
             <div class="stage-header">
                 Вопрос 2: Расставьте блоки метода трудового права
             </div>
@@ -71,43 +71,46 @@
     
 
                  <div class="task-cover" id="task-cover">
-                    <button id="start-task-btn">Начать</button>
+                    <button class="start-task-btn">Начать</button>
                     <div id="start-timer" class="start-timer hidden">3</div>
-                
                 <div class="task-content hidden" id="task-content">
-                    <div class="blocks-container" id="definition-bank">
-                    <!-- Блоки с фрагментами будут добавлены JS -->
-                </div>
+                    <div class="definition-bank">
+                        <!-- Блоки с фрагментами будут добавлены JS -->
+                    </div>
 
-                <div class="drop-zone" id="definition-drop">
-                    <!-- Пустое поле для перетаскивания -->
+                    <div class="definition-drop">
+                        <!-- Пустое поле для перетаскивания -->
+                    </div>
                 </div>
-
                 <button id="submit" class="btn primary-btn">Проверить и сохранить</button>
                 <p id="feedback" class="feedback-text"></p>
-                
+                </div>  
             </div>
             <div class="citation">
                     Источник: онлайн-лекция «Основы трудового права» от Надежды Развейкиной, к.ю.н., доцент.
                 </div>
         </section>
+
+        
         <section class="stage" id="stage-3" data-attempt-id="{{ attempt_id }}">
-    <div class="stage-header">
+    
+    
+            <div class="stage-header">
         Вопрос 3: Принципы трудового права
     </div>
 
-    <div class="stage-content">
+    <div class="stage-content" data-question="3" data-stage="1">
         <div class="instructions">
             <strong>Задание:</strong> Выберите <u>только</u> 5 принципов трудового права.
         </div>
 
-        <div class="blocks-container" id="principles-bank">
-            <!-- JS -->
-        </div>
+        <div class="definition-bank">
+                    <!-- Блоки с фрагментами будут добавлены JS -->
+                </div>
 
-        <div class="drop-zone" id="principles-drop">
-            <!-- Пусто -->
-        </div>
+                <div class="definition-drop">
+                    <!-- Пустое поле для перетаскивания -->
+                </div>
 
         <div id="principles-feedback" class="feedback"></div>
 
@@ -130,7 +133,7 @@
         Вопрос 4: Соотнесите нарушения трудового права с ситуациями
     </div>
 
-    <div class="stage-content">
+    <div class="stage-content" data-question="4" data-stage="1">
         <div class="instructions">
             <strong>Задание:</strong> Перетащите ситуацию к соответствующему нарушению трудового законодательства.
             <br>Лишние ситуации оставьте в банке.
@@ -165,7 +168,7 @@
     <div class="stage-header">
         Вопрос 5: Найдите источники трудового права в сетке
     </div>
-    <div class="stage-content">
+    <div class="stage-content" data-question="5" data-stage="1">
         <div class="instructions">
             <strong>Задание:</strong> В сетке спрятаны слова — <u>источники трудового права</u>. Остальные буквы — отвлекающие.
         </div>
@@ -200,7 +203,6 @@
     </div>
 
     <script type="module" src="/static/js/main.js"></script>
-    <script src="/static/js/engine/game-engine.js"></script>
 
 </body>
 </html>

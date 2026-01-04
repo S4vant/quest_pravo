@@ -143,10 +143,12 @@ async def log_answer(
         if answer.correct and not existing.is_correct:
             existing.is_correct = True
             db.commit()
+            print("updated !")
         # Иначе ничего не делаем (не создаем новый)
         elif existing.wasted_time:
             existing.wasted_time = answer.wasted_time
             db.commit()
+            print("updated time !")
 
     else:
         # Создаем новую запись
@@ -159,6 +161,7 @@ async def log_answer(
         )
         db.add(new_log)
         db.commit()
+        print("created !")
 
     return {"saved": True}
 @router.get("/user/progress")

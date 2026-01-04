@@ -23,13 +23,13 @@ export function stopTimer() {
 export let taskStartedAt = null;
 export let taskUnlocked = false;
 
-export function initTaskWrapper() {
-    const startBtn = document.getElementById('start-task-btn');
+export function initTaskWrapper(wrapper) {
+    const startBtn = wrapper.querySelector('.start-task-btn');
     if (!startBtn) return; // защита
 
-    const timerEl = document.getElementById('start-timer');
-    const cover = document.getElementById('task-cover');
-    const content = document.getElementById('task-content');
+    const timerEl = wrapper.querySelector('.start-timer');
+    const cover = wrapper.querySelector('.task-cover');
+    const content = wrapper.querySelector('.task-content');
 
     startBtn.addEventListener('click', () => {
         startBtn.disabled = true;
