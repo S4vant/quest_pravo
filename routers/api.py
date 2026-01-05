@@ -8,7 +8,7 @@ from ..app.schemas import StartQuest, AnswerData, QuestionResult
 from ..app.db import get_db
 from ..app.models import User, Attempt, AnswerLog
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/static/templates")
 router = APIRouter(tags=["api"], prefix="/api")
 
 
@@ -207,3 +207,4 @@ async def logout(
 ):
     request.session.clear()
     return {"ok": True}
+
