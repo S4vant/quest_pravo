@@ -130,10 +130,11 @@ body {
     gap: 12px;
     min-height: 80px;
     padding: 15px;
-    background: #1f2933;
+    background: #2c2c2c;
     border: 2px dashed #0d6efd;
     border-radius: 8px;
 }
+
 .block {
     padding: 12px 18px;
     background: #3a3a3a;
@@ -141,7 +142,17 @@ body {
     border-radius: 6px;
     cursor: grab;
     color: #e0e0e0;
-    transition: all 0.2s ease;
+    transition:
+        opacity 2s ease,
+        transform 2s cubic-bezier(.2,1.5,.5,1),
+        box-shadow 2s ease;
+}
+
+.block.dragging {
+    opacity: 0.5;
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    cursor: grabbing;
 }
 
 .block:hover {
@@ -163,6 +174,7 @@ body {
     opacity: 0.7;
     pointer-events: none;
 }
+
 
 /* ===== FEEDBACK ===== */
 .feedback {

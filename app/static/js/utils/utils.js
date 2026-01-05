@@ -10,14 +10,14 @@ export function setupDragAndDrop() {
         if (e.target.classList.contains('block')) {
             draggedBlock = e.target;
             e.target.classList.add('dragging');
-            setTimeout(() => e.target.style.opacity = '0.5', 0);
+            
+
         }
     });
 
     document.addEventListener('dragend', (e) => {
         if (draggedBlock) {
             draggedBlock.classList.remove('dragging');
-            draggedBlock.style.opacity = '1';
             draggedBlock = null;
         }
     });
@@ -25,13 +25,17 @@ export function setupDragAndDrop() {
     document.addEventListener('dragover', (e) => {
         if (e.target.classList.contains('definition-bank') || e.target.classList.contains('definition-drop')) {
             e.preventDefault(); // очень важно для drop
+            draggedBlock.classList.remove('dragging');
         }
     });
 
     document.addEventListener('drop', (e) => {
         if (draggedBlock && (e.target.classList.contains('definition-bank') || e.target.classList.contains('definition-drop'))) {
+            
             e.preventDefault();
+            
             e.target.appendChild(draggedBlock);
+            
             draggedBlock = null;
         }
     });
