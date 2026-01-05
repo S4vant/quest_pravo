@@ -1,0 +1,319 @@
+/* ===== BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', serif;
+}
+
+body {
+    background: #121212;
+    color: #e0e0e0;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+/* ===== LAYOUT ===== */
+.stage-sidebar {
+    position: fixed;
+    top: 50px;
+    left: 20px;
+    width: 220px;
+    background-color: #1f1f1f;
+    padding: 15px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.stage-sidebar a {
+    color: #4da6ff;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.stage-sidebar a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 900px;
+    margin-left: 260px;
+    width: 100%;
+}
+
+/* ===== STAGE ===== */
+.stage {
+    background: #1e1e1e;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.stage-header {
+    background: #0d6efd;
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    padding: 18px 25px;
+    border-radius: 8px 8px 0 0;
+}
+
+.stage-content {
+    margin-top: 20px;
+}
+
+/* ===== TEXT ===== */
+.instructions {
+    background: #1a1a1a;
+    border-left: 4px solid #0d6efd;
+    padding: 16px;
+    border-radius: 6px;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.citation {
+    font-style: italic;
+    color: #b0b0b0;
+    margin-top: 15px;
+    padding-left: 15px;
+    border-left: 3px solid #0d6efd;
+}
+
+/* ===== TASK ===== */
+.task-cover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.start-timer {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+
+/* ===== BLOCKS ===== */
+/* .definition-drop {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    min-height: 100px;
+    padding: 15px;
+    border-radius: 8px;
+    background: #2c2c2c;
+} */
+/* ===== ЗОНА С БЛОКАМИ ===== */
+.definition-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    min-height: 80px;
+    padding: 15px;
+    background: #2c2c2c;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* ===== ЗОНА ОТВЕТА ===== */
+.definition-drop {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    min-height: 80px;
+    padding: 15px;
+    background: #1f2933;
+    border: 2px dashed #0d6efd;
+    border-radius: 8px;
+}
+.block {
+    padding: 12px 18px;
+    background: #3a3a3a;
+    border: 2px solid #555;
+    border-radius: 6px;
+    cursor: grab;
+    color: #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.block:hover {
+    border-color: #0d6efd;
+    transform: translateY(-2px);
+}
+
+.block.correct {
+    background: #0f5132;
+    border-color: #10b981;
+}
+
+.block.incorrect {
+    background: #6b0f1a;
+    border-color: #ef4444;
+}
+
+.drop-zone.locked {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* ===== FEEDBACK ===== */
+.feedback {
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 20px;
+    display: none;
+}
+
+.feedback.success {
+    background: #0f5132;
+    color: #d1fae5;
+    display: block;
+}
+
+.feedback.error {
+    background: #6b0f1a;
+    color: #fcd5d5;
+    display: block;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn:hover:not(:disabled) {
+    background: #084298;
+    transform: translateY(-2px);
+}
+
+.btn-clear {
+    background: #6b7280;
+}
+
+.btn-clear:hover {
+    background: #4b5563;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ===== КНОПКА НАЧАТЬ ЗАДАЧУ =====
+    А так же краисвый таймер */
+
+.start-task-btn {
+    padding: 14px 36px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+
+    background: linear-gradient(135deg, #4f8cff, #6a5cff);
+    color: #fff;
+
+    box-shadow: 0 10px 30px rgba(79, 140, 255, 0.35);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        opacity 0.5s ease;
+}
+
+.start-task-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 14px 40px rgba(79, 140, 255, 0.45);
+}
+
+.start-task-btn:active {
+    transform: scale(0.97);
+}
+
+/* исчезновение после клика */
+.start-task-btn.fade-out {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+}
+/* Таймер */
+.start-timer {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #4f8cff;
+    text-align: center;
+
+    opacity: 0;
+    transform: scale(0.6);
+}
+
+.start-timer.show {
+    animation: countdown-pop 1s ease forwards;
+}
+
+.start-timer.fade-out {
+    animation: countdown-fade 0.4s ease forwards;
+}
+
+@keyframes countdown-pop {
+    0% {
+        opacity: 0;
+        transform: scale(0.6);
+        text-shadow: 0 0 0 rgba(79,140,255,0);
+    }
+    40% {
+        opacity: 1;
+        transform: scale(1.2);
+        text-shadow: 0 0 25px rgba(79,140,255,0.9);
+    }
+    100% {
+        opacity: 0.9;
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(79,140,255,0.6);
+    }
+}
+
+@keyframes countdown-fade {
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+.task-live-timer {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 14px;
+    opacity: 0.85;
+    font-family: monospace;
+}
+
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.flash {
+    animation: flash 0.15s ease;
+}
+
+@keyframes flash {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.25); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+

@@ -17,42 +17,130 @@ export function startLiveTimer() {
     }, 500);
 }
 
+function runCountdown(timerEl, onFinish) {
+    let timeLeft = 3;
+
+    timerEl.textContent = timeLeft;
+    timerEl.classList.remove('hidden');
+
+    const interval = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+
+        // лёгкий эффект вспышки
+        timerEl.classList.add('flash');
+        setTimeout(() => timerEl.classList.remove('flash'), 150);
+
+        if (timeLeft === 0) {
+            clearInterval(interval);
+            timerEl.classList.add('hidden');
+            onFinish?.();
+        }
+    }, 1000);
+}
+
 export function stopTimer() {
     clearInterval(gameState.timerInterval);
 }
-export let taskStartedAt = null;
-export let taskUnlocked = false;
+// export let taskStartedAt = null;
+// export let taskUnlocked = false;
 
 export function initTaskWrapper(wrapper) {
     const startBtn = wrapper.querySelector('.start-task-btn');
-    if (!startBtn) return; // защита
+    if (!startBtn) return;
 
     const timerEl = wrapper.querySelector('.start-timer');
     const cover = wrapper.querySelector('.task-cover');
     const content = wrapper.querySelector('.task-content');
 
     startBtn.addEventListener('click', () => {
+        // анимация кнопки
+        startBtn.classList.add('fade-out');
         startBtn.disabled = true;
+
+        setTimeout(() => {
+            startBtn.style.display = 'none';
+        }, 500);
+
         timerEl.classList.remove('hidden');
 
         let timeLeft = 3;
-        timerEl.textContent = timeLeft;
+
+        const showNumber = (num) => {
+            timerEl.textContent = num;
+            timerEl.classList.remove('show');
+            void timerEl.offsetWidth; // перезапуск анимации
+            timerEl.classList.add('show');
+        };
+
+        showNumber(timeLeft);
 
         const interval = setInterval(() => {
             timeLeft--;
-            timerEl.textContent = timeLeft;
 
-            if (timeLeft === 0) {
+            if (timeLeft > 0) {
+                showNumber(timeLeft);
+            } else {
                 clearInterval(interval);
 
-                cover.classList.add('hidden');
-                content.classList.remove('hidden');
+                timerEl.classList.add('fade-out');
+
+                setTimeout(() => {
+                    cover.classList.add('hidden');
+                    content.classList.remove('hidden');
+                    timerEl.classList.add('hidden');
+                }, 400);
 
                 gameState.taskStartedAt = Date.now();
-                taskUnlocked = true;
+                gameState.taskUnlocked = true;
 
                 startLiveTimer();
             }
         }, 1000);
+        runCountdown(timerEl, () => {
+            startTaskTimer(wrapper); // ⬅️ вот тут
+        });
     });
+}
+
+export function startTaskTimer(taskEl) {
+    const timerEl = taskEl.querySelector('.task-live-timer');
+    if (!timerEl) return;
+
+    taskEl._startTime = Date.now();
+
+    taskEl._timerInterval = setInterval(() => {
+        updateTimerUI(taskEl);
+    }, 500);
+
+    timerEl.classList.remove('hidden');
+
+    const interval = setInterval(() => {
+        const seconds = Math.floor((Date.now() - taskEl._startTime) / 1000);
+        timerEl.textContent = formatTime(seconds);
+    }, 500);
+
+    // сохраняем в DOM, а не глобально
+    taskEl.dataset.timerStart = taskEl._startTime;
+    taskEl._timerInterval = interval;
+    
+}
+
+export function stopTaskTimer(taskEl) {
+    taskEl._endTime = Date.now();
+    clearInterval(taskEl._timerInterval);
+}
+
+function formatTime(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function updateTimerUI(taskEl) {
+    const timerEl = taskEl.querySelector('.task-timer');
+    if (!timerEl || !taskEl._startTime) return;
+
+    const seconds = Math.floor((Date.now() - taskEl._startTime) / 1000);
+    timerEl.textContent = `⏱ ${seconds} c`;
 }

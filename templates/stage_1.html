@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Этап 1 — Трудовое право</title>
-        <link rel="stylesheet" href="/static/css/stage1.css">
+        <link rel="stylesheet" href="/static/css/questions.css">
         <link rel="stylesheet" href="/static/css/timer.css">
 </head>
 <body>
@@ -33,25 +33,25 @@
                 <div class="task-cover" id="task-cover">
                     <button class="start-task-btn">Начать</button>
                     <div id="start-timer" class="start-timer hidden">3</div>
+                </div>
+                    <div class="task-content hidden" id="task-content">
+                        <div class="definition-bank">
+                        <!-- Блоки с фрагментами будут добавлены JS -->
+                        </div>
+
+                        <div class="definition-drop">
+                        <!-- Пустое поле для перетаскивания -->
+                        </div>
+
+                        <div id="definition-feedback" class="feedback"></div>
+
+                        <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                            <button class="btn check-btn">Проверить</button>
+                            <button class="btn btn-clear" onclick="clearDropZone(this.closest('.stage-content'))">Очистить</button>
+                        </div>
+
+                    </div>
                 
-                <div class="task-content hidden" id="task-content">
-                    <div class="definition-bank">
-                    <!-- Блоки с фрагментами будут добавлены JS -->
-                </div>
-
-                <div class="definition-drop">
-                    <!-- Пустое поле для перетаскивания -->
-                </div>
-
-                <div id="definition-feedback" class="feedback"></div>
-
-                <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
-                    <button class="btn" id="check-definition-btn">Проверить и продолжить</button>
-                    <button class="btn btn-clear" onclick="clearDropZone('definition-drop')">Очистить</button>
-                </div>
-
-                </div>
-                </div>
 
                 <div class="citation">
                     Источник: онлайн-лекция «Основы трудового права» от Надежды Развейкиной, к.ю.н., доцент.
@@ -70,20 +70,28 @@
                 </div>
     
 
-                 <div class="task-cover" id="task-cover">
-                    <button class="start-task-btn">Начать</button>
-                    <div id="start-timer" class="start-timer hidden">3</div>
-                <div class="task-content hidden" id="task-content">
-                    <div class="definition-bank">
+                    <div class="task-cover" id="task-cover">
+                        <button class="start-task-btn">Начать</button>
+                        <div id="start-timer" class="start-timer hidden">3</div>
+                    </div>
+                    <div class="live-timer" id="task-timer">0:00</div>
+                    <div class="task-content hidden" id="task-content">
+                        <div class="task-live-timer">0:00</div>
+                        
+                        <div class="definition-bank">
                         <!-- Блоки с фрагментами будут добавлены JS -->
-                    </div>
+                        </div>
 
-                    <div class="definition-drop">
+                        <div class="definition-drop">
                         <!-- Пустое поле для перетаскивания -->
+                        </div>
+                    
+                    <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn check-btn">Проверить</button>
+                        <button class="btn btn-clear" onclick="clearDropZone(this.closest('.stage-content'))">Очистить</button>
                     </div>
-                </div>
-                <button id="submit" class="btn primary-btn">Проверить и сохранить</button>
-                <p id="feedback" class="feedback-text"></p>
+                    <p id="feedback" class="feedback-text"></p>
+                    
                 </div>  
             </div>
             <div class="citation">
@@ -102,26 +110,32 @@
     <div class="stage-content" data-question="3" data-stage="1">
         <div class="instructions">
             <strong>Задание:</strong> Выберите <u>только</u> 5 принципов трудового права.
+            
         </div>
-
-        <div class="definition-bank">
+                 <div class="task-cover" id="task-cover">
+                    <button class="start-task-btn">Начать</button>
+                    <div id="start-timer" class="start-timer hidden">3</div>
+                    
+                </div>
+                <div class="live-timer" id="task-timer">0:00</div>
+                <div class="task-content hidden" id="task-content">
+                    <div class="task-live-timer">0:00</div>
+                    <div class="definition-bank">
                     <!-- Блоки с фрагментами будут добавлены JS -->
-                </div>
+                     
+                    </div>
 
-                <div class="definition-drop">
+                    <div class="definition-drop">
                     <!-- Пустое поле для перетаскивания -->
+                    </div>
+
+                    <div id="definition-feedback" class="feedback"></div>
+
+                    <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn check-btn">Проверить</button>
+                        <button class="btn btn-clear" onclick="clearDropZone(this.closest('.stage-content'))">Очистить</button>
+                    </div>
                 </div>
-
-        <div id="principles-feedback" class="feedback"></div>
-
-        <div style="display: flex; gap: 10px;">
-            <button class="btn" id="check-principles-btn" onclick="checkPrinciples()" disabled>
-                <i class="fas fa-check"></i> Проверить
-            </button>
-            <button class="btn btn-clear" onclick="clearDropZone('principles-drop')">
-                <i class="fas fa-trash-alt"></i> Очистить
-            </button>
-        </div>
 
         <div class="citation">
             Источник: Трудовой кодекс РФ, ст. 2

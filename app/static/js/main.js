@@ -1,6 +1,6 @@
 import { questionHandlers } from './questions/index.js';
 import { gameState } from './engine/state.js';
-import { startLiveTimer } from './engine/timer.js';
+import { startLiveTimer, stopTaskTimer } from './engine/timer.js';
 import { setupDragAndDrop, IS_MOBILE, clearDropZone} from './utils/utils.js';
 import { initTaskWrapper } from './engine/timer.js';
 import { loadProgress, loadProfile } from './api/api.js';
@@ -22,8 +22,6 @@ async function loadStage(stage) {
 }
 document.addEventListener('DOMContentLoaded', async () => {
 
-    setupDragAndDrop();
-    
     await loadProgress();
 
     const wrappers = document.querySelectorAll(
@@ -31,31 +29,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     );
 
     for (const wrapper of wrappers) {
-        initTaskWrapper(wrapper);
-        const stage = Number(wrapper.dataset.stage);
-        const question = Number(wrapper.dataset.question);
+    window.clearDropZone = clearDropZone;
+    initTaskWrapper(wrapper);
+    setupDragAndDrop();
+    
+    
+    const stage = Number(wrapper.dataset.stage);
+    const question = Number(wrapper.dataset.question);
 
-        const data = await loadStage(stage);
-        const questionData = data.questions[question];
+    const data = await loadStage(stage);
+    const questionData = data.questions[question];
+    const handler = questionHandlers[question];
 
-        if (!questionData) {
-            console.warn(`Нет данных для вопроса ${question}`);
-            continue;
-        }
+    const startBtn = wrapper.querySelector('.start-task-btn');
 
-        const handler = questionHandlers[question];
-        handler.init(wrapper, questionData);
+    startBtn?.addEventListener('click', () => {
+        setTimeout(() => {
+            handler.init(wrapper, questionData);
+        }, 3100); // ⏱ чуть больше 3 секунд
+    });
 
-        const startBtn = wrapper.querySelector('.start-task-btn');
-        const checkBtn = wrapper.querySelector('.check-btn');
+    const checkBtn = wrapper.querySelector('.check-btn');
+    checkBtn?.addEventListener('click', () => {
+        
+        
+        stopTaskTimer(wrapper);
 
-        startBtn?.addEventListener('click', () => {
-            gameState.taskStartedAt = Date.now();
-            gameState.taskUnlocked = true;
-        });
-
-        checkBtn?.addEventListener('click', () => {
-            handler.check(wrapper, { stage, question });
-        });
-    }
+        handler.check(wrapper, { stage, question });
+        
+    });
+}
 });

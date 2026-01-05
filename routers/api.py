@@ -123,47 +123,57 @@ async def log_answer(
     request: Request,
     db: Session = Depends(get_db)
 ):
-    print(data)
-    attempt_id=request.session.get("attempt_id")
-    answer = QuestionResult(
-        wasted_time=data.wasted_time,
-        correct=data.correct
-    )
-    # Проверяем, есть ли уже запись
+    attempt_id = request.session.get("attempt_id")
+    answer_time = data.wasted_time
+    is_correct = data.correct
 
+    # Ищем существующую запись
     existing = db.query(AnswerLog).filter(
         AnswerLog.attempt_id == attempt_id,
         AnswerLog.stage_number == stage_number,
-        AnswerLog.question_number == question_number,
-        AnswerLog.wasted_time < answer.wasted_time
+        AnswerLog.question_number == question_number
     ).first()
 
     if existing:
-        # Если ответ уже есть и он был неверным, обновляем на верный
-        if answer.correct and not existing.is_correct:
+        # Если новый ответ неправильный → игнорируем
+        if not is_correct:
+            print("Answer incorrect, not updating.")
+            return {"saved": False}
+
+        # Если существующий неправильный → обновляем на правильный
+        if not existing.is_correct:
             existing.is_correct = True
+            existing.wasted_time = answer_time
             db.commit()
-            print("updated !")
-        # Иначе ничего не делаем (не создаем новый)
-        elif existing.wasted_time:
-            existing.wasted_time = answer.wasted_time
-            db.commit()
-            print("updated time !")
+            print("Updated incorrect to correct!")
+            return {"saved": True}
+
+        # Если оба правильные → оставляем минимальное время
+        if is_correct and existing.is_correct:
+            if answer_time < existing.wasted_time:
+                existing.wasted_time = answer_time
+                db.commit()
+                print("Updated best time!")
+                return {"saved": True}
+            else:
+                print("Existing correct answer is better, no update.")
+                return {"saved": False}
 
     else:
-        # Создаем новую запись
+        # Нет записи → создаём
         new_log = AnswerLog(
             attempt_id=attempt_id,
             stage_number=stage_number,
             question_number=question_number,
-            is_correct=answer.correct,
-            wasted_time=answer.wasted_time,
+            is_correct=is_correct,
+            wasted_time=answer_time,
         )
         db.add(new_log)
         db.commit()
-        print("created !")
+        print("Created new answer log!")
+        return {"saved": True}
 
-    return {"saved": True}
+    return {"saved": False}
 @router.get("/user/progress")
 async def user_progress(
     request: Request, 

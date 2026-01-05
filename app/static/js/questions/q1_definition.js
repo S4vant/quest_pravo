@@ -1,15 +1,15 @@
 import { shuffle  } from '../utils/utils.js';
 import { gameState } from '../engine/state.js';
-import { startLiveTimer, stopTimer } from '../engine/timer.js';
+import { startLiveTimer, stopTimer, stopTaskTimer } from '../engine/timer.js';
 import { saveResult, showRecordCelebration } from '../engine/game-engine.js';
 import { getBestTime } from '../api/api.js';
 
 let definition = [];
 export function initQuestion1(wrapper, questionData) {
-
+    console.log('INIT QUESTION 1', questionData);
     startLiveTimer();
 
-    const definition = questionData.definition;
+    definition = questionData.definition; 
     const distractors = questionData.distractors;
 
     const bank = wrapper.querySelector('.definition-bank');
@@ -24,7 +24,7 @@ export function initQuestion1(wrapper, questionData) {
         const div = document.createElement('div');
         div.className = 'block';
         div.textContent = text;
-
+        div.draggable = !gameState.IS_MOBILE;
         div.addEventListener('click', () => {
             div.parentElement === bank
                 ? drop.appendChild(div)
@@ -45,17 +45,22 @@ export async function checkQuestion1(wrapper, meta) {
 
     const drop = wrapper.querySelector('.definition-drop');
     const blocks = [...drop.children].map(b => b.textContent.trim());
-
+    // Проверка на условие выполнение задания
     const correct =
         blocks.length === definition.length &&
         definition.every((p, i) => p === blocks[i]);
 
-    stopTimer();
 
-    const wastedTime = Math.floor(
-        (Date.now() - gameState.taskStartedAt) / 1000
-    );
+    // document.getElementById('check-definition-btn').disabled = true;
+    stopTaskTimer(wrapper);
+    // запись времени
+    console.log(wrapper._startTime); // timestamp
+    console.log(wrapper._endTime);   // timestamp
+    console.log(wrapper._endTime - wrapper._startTime);
+    
 
+    const wastedTime = Math.floor((wrapper._endTime - wrapper._startTime) / 1000);
+    console.log(wastedTime);
     const best = await getBestTime(meta.stage, meta.question);
 
     if (correct && best !== null && wastedTime < best) {

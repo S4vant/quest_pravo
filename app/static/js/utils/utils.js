@@ -4,6 +4,7 @@ let draggedBlock = null;
 export function shuffle(array) {
     return [...array].sort(() => Math.random() - 0.5);
 }
+
 export function setupDragAndDrop() {
     document.addEventListener('dragstart', (e) => {
         if (e.target.classList.contains('block')) {
@@ -20,33 +21,29 @@ export function setupDragAndDrop() {
             draggedBlock = null;
         }
     });
-     document.addEventListener("dragover", e => {
-        e.preventDefault();
-        if (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone")) {
-            // e.target.style.backgroundColor = "#e0f0ff";
+
+    document.addEventListener('dragover', (e) => {
+        if (e.target.classList.contains('definition-bank') || e.target.classList.contains('definition-drop')) {
+            e.preventDefault(); // очень важно для drop
         }
     });
 
-    document.addEventListener("dragleave", e => {
-        if (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone")) {
-            // e.target.style.backgroundColor = "#f8fafc";
-        }
-    });
-
-    document.addEventListener("drop", e => {
-        e.preventDefault();
-        if (draggedBlock && (e.target.classList.contains("blocks-container") || e.target.classList.contains("drop-zone"))) {
+    document.addEventListener('drop', (e) => {
+        if (draggedBlock && (e.target.classList.contains('definition-bank') || e.target.classList.contains('definition-drop'))) {
+            e.preventDefault();
             e.target.appendChild(draggedBlock);
             draggedBlock = null;
-            // e.target.style.backgroundColor = "#f8fafc";
         }
     });
 }
 
 
-export function clearDropZone(zoneId) {
-    const zone = document.getElementById(zoneId);
-    const bank = document.getElementById('definition-bank');
+
+export function clearDropZone(wrapper) {
+    const zone = wrapper.querySelector('.definition-drop');
+    const bank = wrapper.querySelector('.definition-bank');
+
+    if (!zone || !bank) return;
 
     Array.from(zone.children).forEach(block => bank.appendChild(block));
 }

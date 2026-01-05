@@ -24,7 +24,7 @@ export async function saveResult(isCorrect, stage, question, wastedTime) {
                 wasted_time: wastedTime
             })
         });
-
+        console.log(res);
         const data = await res.json();
         if (!data.saved) {
             console.error("Не удалось сохранить ответ");
