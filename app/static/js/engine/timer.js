@@ -1,5 +1,5 @@
 import { gameState } from './state.js';
-
+import { } from '../utils/utils.js';
 export function startLiveTimer() {
     const timerEl = document.getElementById('task-timer');
     if (!timerEl) return;
@@ -48,16 +48,24 @@ export function stopTimer() {
 export function initTaskWrapper(wrapper) {
     const startBtn = wrapper.querySelector('.start-task-btn');
     if (!startBtn) return;
-
     const timerEl = wrapper.querySelector('.start-timer');
     const cover = wrapper.querySelector('.task-cover');
     const content = wrapper.querySelector('.task-content');
 
+    // Раскрыть кнопку
+
+    wrapper.querySelector('.start-task-btn').classList.remove('hidden');
+    wrapper.querySelector('.start-task-btn').classList.remove('fade-out');
+    wrapper.querySelector('.start-task-btn').disabled = false;
+    wrapper.querySelector('.start-task-btn').style.display = 'block';
     startBtn.addEventListener('click', () => {
         // анимация кнопки
         startBtn.classList.add('fade-out');
         startBtn.disabled = true;
-
+        wrapper._state = {
+            completed: false,
+            locked: false
+        };
         setTimeout(() => {
             startBtn.style.display = 'none';
         }, 500);
@@ -94,9 +102,12 @@ export function initTaskWrapper(wrapper) {
                 gameState.taskStartedAt = Date.now();
                 gameState.taskUnlocked = true;
 
+                // запуск общего таймера
                 startLiveTimer();
             }
         }, 1000);
+
+
         runCountdown(timerEl, () => {
             startTaskTimer(wrapper); // ⬅️ вот тут
         });
@@ -105,12 +116,23 @@ export function initTaskWrapper(wrapper) {
 
 export function startTaskTimer(taskEl) {
     const timerEl = taskEl.querySelector('.task-live-timer');
+    taskEl.querySelector('.start-timer').classList.remove('hidden', 'fade-out');
     if (!timerEl) return;
 
     taskEl._startTime = Date.now();
 
-    taskEl._timerInterval = setInterval(() => {
-        updateTimerUI(taskEl);
+     taskEl._timerInterval = setInterval(() => {
+        const elapsed =
+            Math.floor((Date.now() - taskEl._startTime) / 1000) +
+            taskEl._penalty;
+
+        updateTimerUI(taskEl, elapsed);
+
+        // ⛔ АВТОПРОВАЛ
+        if (elapsed >= 60) {
+            stopTaskTimer(taskEl);
+            failTask(taskEl, 'Время вышло');
+        }
     }, 500);
 
     timerEl.classList.remove('hidden');
@@ -131,7 +153,7 @@ export function stopTaskTimer(taskEl) {
     clearInterval(taskEl._timerInterval);
 }
 
-function formatTime(sec) {
+export function formatTime(sec) {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
     return `${m}:${s.toString().padStart(2, '0')}`;

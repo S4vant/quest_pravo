@@ -4,7 +4,7 @@ import { startLiveTimer, stopTaskTimer } from './engine/timer.js';
 import { setupDragAndDrop, IS_MOBILE, clearDropZone} from './utils/utils.js';
 import { initTaskWrapper } from './engine/timer.js';
 import { loadProgress, loadProfile } from './api/api.js';
-
+import { resetQuestion } from './utils/utils.js';
 
 // import { initQuestion1 } from './stage1/q1_definition.js';
 // import { initStage2 } from './stage1/q2_method.js';
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.clearDropZone = clearDropZone;
     initTaskWrapper(wrapper);
     setupDragAndDrop();
-    
+
     
     const stage = Number(wrapper.dataset.stage);
     const question = Number(wrapper.dataset.question);
@@ -51,12 +51,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const checkBtn = wrapper.querySelector('.check-btn');
     checkBtn?.addEventListener('click', () => {
-        
-        
-        stopTaskTimer(wrapper);
-
         handler.check(wrapper, { stage, question });
-        
+    });
+    wrapper.querySelector('.btn-restart')
+    ?.addEventListener('click', () => {
+        wrapper.querySelector('.task-result-overlay')
+            .classList.add('hidden');
+        resetQuestion(wrapper);
+        initTaskWrapper(wrapper);
     });
 }
 });

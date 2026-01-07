@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Этап 1 — Трудовое право</title>
         <link rel="stylesheet" href="/static/css/questions.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link rel="stylesheet" href="/static/css/timer.css">
 </head>
 <body>
@@ -14,7 +15,7 @@
     <p><a href="/stage/2">Этап 2: Метод трудового права</a></p>
     <p><a href="/stage/3">Этап 3: Правила трудового законодательства</a></p>
     </div>
-
+    
     <div class="container">
 
         <!-- Первое задание -->
@@ -29,12 +30,36 @@
                     Перетащите блоки в правильном порядке в поле ниже. Доступны <strong>лишние фрагменты</strong>.<br>
                     Продолжить можно <u>только при точном совпадении формулировки</u>.
                 </div>
-                
+                <div class="task-result-overlay hidden">
+
+                <div class="result-card">
+                    <h3>Результат</h3>
+
+                    <div class="result-times">
+                        <div>
+                            <span class="label">Текущее:</span>
+                            <span class="value current-time"></span>
+                        </div>
+                        <div>
+                            <span class="label">Лучшее:</span>
+                            <span class="value best-time"></span>
+                        </div>
+                        <div class="delta-time"></div>
+                    </div>
+
+                    <button class="btn btn-restart">Пройти заново</button>
+                </div>
+            </div>  
+
                 <div class="task-cover" id="task-cover">
                     <button class="start-task-btn">Начать</button>
                     <div id="start-timer" class="start-timer hidden">3</div>
                 </div>
+
                     <div class="task-content hidden" id="task-content">
+
+                        <div class="task-live-timer">0:00</div>
+
                         <div class="definition-bank">
                         <!-- Блоки с фрагментами будут добавлены JS -->
                         </div>
@@ -48,6 +73,7 @@
                         <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
                             <button class="btn check-btn">Проверить</button>
                             <button class="btn btn-clear" onclick="clearDropZone(this.closest('.stage-content'))">Очистить</button>
+
                         </div>
 
                     </div>
@@ -89,6 +115,7 @@
                     <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
                         <button class="btn check-btn">Проверить</button>
                         <button class="btn btn-clear" onclick="clearDropZone(this.closest('.stage-content'))">Очистить</button>
+                        <button class="btn btn-restart">Пройти заново</button>
                     </div>
                     <p id="feedback" class="feedback-text"></p>
                     
@@ -134,6 +161,7 @@
                     <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
                         <button class="btn check-btn">Проверить</button>
                         <button class="btn btn-clear" onclick="clearDropZone(this.closest('.stage-content'))">Очистить</button>
+                        <button class="btn btn-restart">Пройти заново</button>
                     </div>
                 </div>
 

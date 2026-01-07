@@ -1,14 +1,15 @@
-import { shuffle  } from '../utils/utils.js';
+import { shuffle, lockQuestionUI, unlockQuestionUi, applyPenalty, showError  } from '../utils/utils.js';
 import { gameState } from '../engine/state.js';
 import { startLiveTimer, stopTimer, stopTaskTimer } from '../engine/timer.js';
-import { saveResult, showRecordCelebration } from '../engine/game-engine.js';
+import { saveResult, showResultOverlay } from '../engine/game-engine.js';
 import { getBestTime } from '../api/api.js';
 
+
 let definition = [];
-export function initQuestion1(wrapper, questionData) {
+export function initQuestion1(wrapper, questionData) {s
     console.log('INIT QUESTION 1', questionData);
     startLiveTimer();
-
+    unlockQuestionUi(wrapper);
     definition = questionData.definition; 
     const distractors = questionData.distractors;
 
@@ -40,7 +41,8 @@ export function initQuestion1(wrapper, questionData) {
 }
 
 export async function checkQuestion1(wrapper, meta) {
-
+    const stage = Number(wrapper.dataset.stage);
+    const question = Number(wrapper.dataset.question);
     if (!gameState.taskUnlocked || !gameState.taskStartedAt) return;
 
     const drop = wrapper.querySelector('.definition-drop');
@@ -49,23 +51,28 @@ export async function checkQuestion1(wrapper, meta) {
     const correct =
         blocks.length === definition.length &&
         definition.every((p, i) => p === blocks[i]);
-
-
-    // document.getElementById('check-definition-btn').disabled = true;
-    stopTaskTimer(wrapper);
-    // запись времени
-    console.log(wrapper._startTime); // timestamp
-    console.log(wrapper._endTime);   // timestamp
-    console.log(wrapper._endTime - wrapper._startTime);
-    
-
-    const wastedTime = Math.floor((wrapper._endTime - wrapper._startTime) / 1000);
-    console.log(wastedTime);
     const best = await getBestTime(meta.stage, meta.question);
-
-    if (correct && best !== null && wastedTime < best) {
-        showRecordCelebration(best, wastedTime);
+    // console.log("Best    = ",best);
+    const wastedTime = Math.floor((Date.now() - wrapper._startTime) / 1000);
+    // document.getElementById('check-definition-btn').disabled = true;
+    // Вывод времени ответа для дебага
+    // console.log("start",wrapper._startTime); // timestamp
+    // console.log("end",wrapper._endTime);   // timestamp
+    // console.log('итог',wrapper._endTime - wrapper._startTime);
+    if (correct) {
+        wrapper._state.completed = true;
+        wrapper._state.locked = true;
+        stopTaskTimer(wrapper);
+        lockQuestionUI(wrapper);
+        showResultOverlay(wrapper, {
+            current: wastedTime,
+            best,
+        });
     }
-
-    await saveResult(correct, meta.stage, meta.question, wastedTime);
+    else {
+    applyPenalty(wrapper, 5);
+    showError(wrapper, 'Неправильный ответ');
+    return;
+}
+    saveResult(correct, meta.stage, meta.question, wastedTime);
 }

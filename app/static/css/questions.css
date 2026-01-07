@@ -84,6 +84,7 @@ body {
     border-left: 3px solid #0d6efd;
 }
 
+
 /* ===== TASK ===== */
 .task-cover {
     display: flex;
@@ -148,12 +149,6 @@ body {
         box-shadow 2s ease;
 }
 
-.block.dragging {
-    opacity: 0.5;
-    transform: scale(1.05);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-    cursor: grabbing;
-}
 
 .block:hover {
     border-color: #0d6efd;
@@ -329,3 +324,108 @@ body {
     100% { transform: scale(1); opacity: 1; }
 }
 
+.stage-sidebar {
+    position: fixed;
+    top: 50px; /* чуть ниже шапки */
+    left: 20px;
+    width: 220px;
+    background-color: #1f1f1f;
+    padding: 15px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+/* Ссылки внутри панели */
+.stage-sidebar a {
+    color: #4da6ff;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.stage-sidebar a:hover {
+    text-decoration: underline;
+}
+
+/* Контейнер для всех заданий */
+.container {
+    max-width: 900px;
+    margin-left: 260px; /* чтобы не перекрывать левую панель */
+    padding: 20px;
+}
+.stage-sidebar a {
+    text-decoration: none; /* Убирает подчеркивание */
+    color: inherit;        /* Берет цвет текста у тега <p> */
+    
+}
+.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* Карточка результатов */
+
+.stage-content {
+    position: relative;
+}
+
+.task-result-overlay {
+    position: absolute;
+    inset: 10px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 12px;
+    animation: fadeIn 0.4s ease;
+}
+
+.result-card {
+    background: white;
+    padding: 24px 32px;
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    text-align: center;
+    min-width: 260px;
+}
+
+.result-times {
+    margin: 16px 0;
+    font-size: 16px;
+}
+
+.result-times .label {
+    color: #777;
+    margin-right: 6px;
+}
+
+.result-times .value {
+    font-weight: 600;
+}
+
+.delta-time {
+    margin-top: 8px;
+    font-weight: 600;
+}
+
+.delta-time.better {
+    color: #16a34a;
+}
+
+.delta-time.worse {
+    color: #dc2626;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}

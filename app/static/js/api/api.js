@@ -70,7 +70,8 @@ export async function getBestTime(stage, question) {
         if (!qData || qData.wasted_time == null) return null;
 
         return qData.wasted_time;
-    } catch {
+    } catch (err) {
+        console.error("Ошибка загрузки лучшего времени:", err);
         return null;
     }
 }
