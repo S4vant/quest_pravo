@@ -68,7 +68,7 @@ export async function getBestTime(stage, question) {
 
         const qData = stageData.questions?.find(q => q.q === question);
         if (!qData || qData.wasted_time == null) return null;
-
+        console.log(qData.wasted_time);
         return qData.wasted_time;
     } catch (err) {
         console.error("Ошибка загрузки лучшего времени:", err);

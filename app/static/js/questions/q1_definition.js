@@ -6,7 +6,7 @@ import { getBestTime } from '../api/api.js';
 
 
 let definition = [];
-export function initQuestion1(wrapper, questionData) {s
+export function initQuestion1(wrapper, questionData) {
     console.log('INIT QUESTION 1', questionData);
     startLiveTimer();
     unlockQuestionUi(wrapper);
@@ -51,7 +51,7 @@ export async function checkQuestion1(wrapper, meta) {
     const correct =
         blocks.length === definition.length &&
         definition.every((p, i) => p === blocks[i]);
-    const best = await getBestTime(meta.stage, meta.question);
+
     // console.log("Best    = ",best);
     const wastedTime = Math.floor((Date.now() - wrapper._startTime) / 1000);
     // document.getElementById('check-definition-btn').disabled = true;
@@ -66,11 +66,12 @@ export async function checkQuestion1(wrapper, meta) {
         lockQuestionUI(wrapper);
         showResultOverlay(wrapper, {
             current: wastedTime,
-            best,
+            best: await getBestTime(meta.stage, meta.question)
         });
     }
     else {
     applyPenalty(wrapper, 5);
+    
     showError(wrapper, 'Неправильный ответ');
     return;
 }

@@ -45,6 +45,7 @@
                             <span class="value best-time"></span>
                         </div>
                         <div class="delta-time"></div>
+                        <div class="result-message"></div>
                     </div>
 
                     <button class="btn btn-restart">Пройти заново</button>
@@ -58,23 +59,24 @@
 
                     <div class="task-content hidden" id="task-content">
 
-                        <div class="task-live-timer">0:00</div>
-
-                        <div class="definition-bank">
-                        <!-- Блоки с фрагментами будут добавлены JS -->
+                         <div class="task-timer-wrapper">
+                            <div class="task-live-timer">0:00</div>
                         </div>
 
-                        <div class="definition-drop">
-                        <!-- Пустое поле для перетаскивания -->
-                        </div>
+                        
+                        <div class="definition-bank"></div>
 
-                        <div id="definition-feedback" class="feedback"></div>
+
+                        <div class="definition-drop"></div>
+
 
                         <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
                             <button class="btn check-btn">Проверить</button>
                             <button class="btn btn-clear" onclick="clearDropZone(this.closest('.stage-content'))">Очистить</button>
 
                         </div>
+
+                        <div class="task-error hidden"></div>   
 
                     </div>
                 

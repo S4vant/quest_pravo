@@ -1,3 +1,4 @@
+import { getBestTime } from '../api/api.js';
 import { formatTime } from './timer.js';
 export function showRecordCelebration(oldTime, newTime) {
     console.log(oldTime,'=>', newTime);
@@ -35,17 +36,18 @@ export async function saveResult(isCorrect, stage, question, wastedTime) {
     }
 }
 
-export function showResultOverlay(wrapper, { current, best }) {
-
+export async function showResultOverlay(wrapper, { current, best, message }) {
     const overlay = wrapper.querySelector('.task-result-overlay');
     const currentEl = overlay.querySelector('.current-time');
     const bestEl = overlay.querySelector('.best-time');
     const deltaEl = overlay.querySelector('.delta-time');
 
     currentEl.textContent = formatTime(current);
-    bestEl.textContent = best ? formatTime(best) : '—';
 
-    if (best) {
+    
+    if (best !== null && best !== undefined) {
+        bestEl.textContent = formatTime(best);
+        console.log(best, "-", current);
         const diff = best - current;
         if (diff > 0) {
             deltaEl.textContent = `Лучше на ${formatTime(diff)}`;
@@ -56,15 +58,29 @@ export function showResultOverlay(wrapper, { current, best }) {
         } else {
             deltaEl.textContent = 'Повтор рекорда';
         }
+    } else {
+        bestEl.textContent = '—';
+        deltaEl.textContent = '';
+    }
+
+    if (message) {
+        overlay.querySelector('.result-message').textContent = message;
     }
 
     overlay.classList.remove('hidden');
 }
 
-export function showFailOverlay(wrapper, reason) {
-    showResultOverlay(wrapper, {
-        current: 60,
-        best: null,
+export async function showFailOverlay(wrapper, reason) {
+    const elapsed =
+        Math.floor((Date.now() - wrapper._startTime) / 1000) +
+        (wrapper._penalty || 0);
+
+    const besttime = await getBestTime(Number(wrapper.dataset.stage), Number(wrapper.dataset.question));
+    await showResultOverlay(wrapper, {
+        current: elapsed,
+        best: besttime,
         message: reason
     });
 }
+
+

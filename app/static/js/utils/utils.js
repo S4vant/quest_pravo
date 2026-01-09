@@ -111,4 +111,34 @@ export function failTask(wrapper, reason) {
 
 export function applyPenalty(wrapper, seconds) {
     wrapper._penalty = (wrapper._penalty || 0) + seconds;
+    showPenalty(wrapper, "5");
+}
+
+export function showError(wrapper, text) {
+    const el = wrapper.querySelector('.task-error');
+    if (!el) return;
+
+    el.textContent = text;
+    el.classList.remove('hidden');
+
+    setTimeout(() => {
+        el.classList.add('hidden');
+    }, 2000);
+}
+
+export function showPenalty(taskEl, amount) {
+    const timer = taskEl.querySelector('.task-live-timer');
+    if (!timer) return;
+
+    const container = timer.parentElement;
+
+    const penaltyEl = document.createElement('div');
+    penaltyEl.className = 'penalty-float';
+    penaltyEl.textContent = `+${amount}`;
+
+    container.appendChild(penaltyEl);
+
+    penaltyEl.addEventListener('animationend', () => {
+        penaltyEl.remove();
+    });
 }

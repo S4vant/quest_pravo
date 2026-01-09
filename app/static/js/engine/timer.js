@@ -1,5 +1,6 @@
 import { gameState } from './state.js';
 import { } from '../utils/utils.js';
+import { showFailOverlay} from './game-engine.js';
 export function startLiveTimer() {
     const timerEl = document.getElementById('task-timer');
     if (!timerEl) return;
@@ -116,35 +117,28 @@ export function initTaskWrapper(wrapper) {
 
 export function startTaskTimer(taskEl) {
     const timerEl = taskEl.querySelector('.task-live-timer');
+    
+ 
     taskEl.querySelector('.start-timer').classList.remove('hidden', 'fade-out');
     if (!timerEl) return;
 
     taskEl._startTime = Date.now();
 
-     taskEl._timerInterval = setInterval(() => {
-        const elapsed =
-            Math.floor((Date.now() - taskEl._startTime) / 1000) +
-            taskEl._penalty;
+    taskEl._timerInterval = setInterval(() => {
+    const elapsed =
+        Math.floor((Date.now() - taskEl._startTime) / 1000) +
+        (taskEl._penalty || 0);
+        
+    updateTimerUI(taskEl, elapsed);
 
-        updateTimerUI(taskEl, elapsed);
-
-        // ⛔ АВТОПРОВАЛ
-        if (elapsed >= 60) {
-            stopTaskTimer(taskEl);
-            failTask(taskEl, 'Время вышло');
-        }
-    }, 500);
-
+    if (elapsed >= 60) {
+        stopTaskTimer(taskEl);
+        showFailOverlay(taskEl, 'Время вышло');
+    }
+}, 500);
     timerEl.classList.remove('hidden');
-
-    const interval = setInterval(() => {
-        const seconds = Math.floor((Date.now() - taskEl._startTime) / 1000);
-        timerEl.textContent = formatTime(seconds);
-    }, 500);
-
     // сохраняем в DOM, а не глобально
-    taskEl.dataset.timerStart = taskEl._startTime;
-    taskEl._timerInterval = interval;
+
     
 }
 
@@ -159,10 +153,9 @@ export function formatTime(sec) {
     return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-function updateTimerUI(taskEl) {
-    const timerEl = taskEl.querySelector('.task-timer');
-    if (!timerEl || !taskEl._startTime) return;
+function updateTimerUI(taskEl, elapsed) {
+    const timerEl = taskEl.querySelector('.task-live-timer');
+    if (!timerEl) return;
 
-    const seconds = Math.floor((Date.now() - taskEl._startTime) / 1000);
-    timerEl.textContent = `⏱ ${seconds} c`;
+    timerEl.textContent = `⏱ ${elapsed} c`;
 }
