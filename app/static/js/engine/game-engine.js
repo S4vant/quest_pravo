@@ -1,5 +1,6 @@
 import { getBestTime } from '../api/api.js';
 import { formatTime } from './timer.js';
+import { progressStore } from '../engine/progress-store.js';
 export function showRecordCelebration(oldTime, newTime) {
     console.log(oldTime,'=>', newTime);
     // const el = document.getElementById('record-celebration');
@@ -16,6 +17,13 @@ export function showRecordCelebration(oldTime, newTime) {
 
 export async function saveResult(isCorrect, stage, question, wastedTime) {
     try {
+        const prev = progressStore.getBest(stage, question);
+        const isBetter = prev == null || wastedTime < prev;
+
+        if (!isBetter) return;
+
+        progressStore.setBest(stage, question, wastedTime);
+
         const res = await fetch(`/api/stage/${stage}/q/${question}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -75,7 +83,7 @@ export async function showFailOverlay(wrapper, reason) {
         Math.floor((Date.now() - wrapper._startTime) / 1000) +
         (wrapper._penalty || 0);
 
-    const besttime = await getBestTime(Number(wrapper.dataset.stage), Number(wrapper.dataset.question));
+    const besttime = progressStore.getBest(Number(wrapper.dataset.stage), Number(wrapper.dataset.question));
     await showResultOverlay(wrapper, {
         current: elapsed,
         best: besttime,

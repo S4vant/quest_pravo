@@ -3,7 +3,9 @@
 // /api/start_attempt
 // /api/stage/{stage}/q/{question}
 // /api/user/progress
-
+// /api/profile
+import { progressStore } from "../engine/progress-store.js";
+import { stageDataStore } from '../engine/stage-data-store.js';
 export async function startAttempt() {
     const nameElem = document.querySelector(".profile-name");
     const emailElem = document.querySelector(".profile-email");
@@ -58,24 +60,37 @@ export async function loadProfile() {
     window.location.href = "/api/profile";
 }
 
-export async function getBestTime(stage, question) {
+export function getBestTime(stage, question) {
+    return progressStore.getBest(stage, question);
+}
+
+export async function loadUserProgressOnce() {
+    if (progressStore.isLoaded()) return;
+
     try {
-        const res = await fetch("/api/user/progress");
+        const res = await fetch('/api/user/progress');
         const data = await res.json();
-
-        const stageData = data.stages?.find(s => s.stage === stage);
-        if (!stageData) return null;
-
-        const qData = stageData.questions?.find(q => q.q === question);
-        if (!qData || qData.wasted_time == null) return null;
-        console.log(qData.wasted_time);
-        return qData.wasted_time;
+        progressStore.loadFromServer(data);
     } catch (err) {
-        console.error("Ошибка загрузки лучшего времени:", err);
-        return null;
+        console.error('Ошибка загрузки прогресса:', err);
     }
 }
 
+export async function loadStageOnce(stage) {
+    if (stageDataStore.has(stage)) {
+        return stageDataStore.getStage(stage);
+    }
+
+    const res = await fetch(`/static/data/stage_${stage}.json`);
+    const data = await res.json();
+
+    stageDataStore.set(stage, data);
+
+    // прогресс тоже грузим один раз
+    await loadUserProgressOnce();
+
+    return data;
+}
 
 
 export async function loadProgress() {

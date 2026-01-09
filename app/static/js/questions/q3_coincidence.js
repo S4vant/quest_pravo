@@ -3,22 +3,7 @@ import { gameState } from '../engine/state.js';
 import { startLiveTimer, stopTaskTimer } from '../engine/timer.js';
 import { saveResult, showResultOverlay } from '../engine/game-engine.js';
 import { getBestTime } from '../api/api.js';
-
-const PRINCIPLES_CORRECT = [
-    "Свобода труда",
-    "Запрет принудительного труда",
-    "Запрет дискриминации в сфере труда",
-    "Равенство прав и возможностей работников",
-    "Обеспечение права каждого на справедливые условия труда"
-];
-
-const PRINCIPLES_DISTRACTORS = [
-    "Обязанность работать по настроению работодателя",
-    "Принцип утреннего кофе на рабочем месте",
-    "Свобода увольнения без объяснений",
-    "Право работодателя кричать в понедельник",
-    "Обязательный сверхурочный энтузиазм"
-];
+import { progressStore } from '../engine/progress-store.js';
 
 let principlesBlocks = [];
 
@@ -83,18 +68,25 @@ export async function checkQuestion3(wrapper, meta) {
         showError(wrapper, `Ошибка. Отсутствуют: ${missing.join(', ')}; Лишние: ${extra.join(', ')}`);
         return;
     }
-
+    const prevBest = getBestTime(meta.stage, meta.question);
+    const isNewBest = prevBest == null || wastedTime < prevBest;
     if (correct) {
         wrapper._state.completed = true;
         wrapper._state.locked = true;
         stopTaskTimer(wrapper);
         lockQuestionUI(wrapper);
 
+        
+
+        
         showResultOverlay(wrapper, {
             current: wastedTime,
-            best: await getBestTime(meta.stage, meta.question)
+            best: progressStore.getBest(meta.stage, meta.question)
         });
+        
     }
 
-    saveResult(true, meta.stage, meta.question, wastedTime);
+    if (isNewBest) {
+            saveResult(correct, meta.stage, meta.question, wastedTime);
+        }
 }

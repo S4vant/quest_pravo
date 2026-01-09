@@ -3,6 +3,7 @@ import { gameState } from '../engine/state.js';
 import { startLiveTimer, stopTimer, stopTaskTimer } from '../engine/timer.js';
 import { saveResult, showResultOverlay } from '../engine/game-engine.js';
 import { getBestTime } from '../api/api.js';
+import { progressStore } from '../engine/progress-store.js';
 
 
 let definition = [];
@@ -51,15 +52,23 @@ export async function checkQuestion1(wrapper, meta) {
         definition.every((p, i) => p === blocks[i]);
         
     const wastedTime = Math.floor((Date.now() - wrapper._startTime) / 1000);
+    const prevBest = getBestTime(meta.stage, meta.question);
+    const isNewBest = prevBest == null || wastedTime < prevBest;
+    //Загрузка времени в клиент
+    //Удачное завершение
     if (correct) {
         wrapper._state.completed = true;
         wrapper._state.locked = true;
         stopTaskTimer(wrapper);
         lockQuestionUI(wrapper);
+
+
+        
         showResultOverlay(wrapper, {
             current: wastedTime,
-            best: await getBestTime(meta.stage, meta.question)
+            best: progressStore.getBest(meta.stage, meta.question)
         });
+        
     }
     else {
     applyPenalty(wrapper, 5);
@@ -67,5 +76,8 @@ export async function checkQuestion1(wrapper, meta) {
     showError(wrapper, 'Неправильный ответ');
     return;
 }
-    saveResult(correct, meta.stage, meta.question, wastedTime);
+    if (isNewBest) {
+            saveResult(correct, meta.stage, meta.question, wastedTime);
+            
+        }
 }

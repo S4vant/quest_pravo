@@ -63,17 +63,30 @@ export function resetQuestion(wrapper) {
     // ❌ Остановить таймер
     if (wrapper._timerInterval) {
         clearInterval(wrapper._timerInterval);
+        wrapper._timerInterval = null;
     }
 
     // ❌ Очистить состояние
     delete wrapper._startTime;
     delete wrapper._endTime;
     delete wrapper._timerInterval;
-
+    wrapper._penalty = 0 ;
     wrapper._state = {
         completed: false,
         locked: false
     };
+
+    const timerEl = wrapper.querySelector('.task-live-timer');
+    if (timerEl) {
+        timerEl.textContent = '00:00';
+        timerEl.classList.add('hidden');
+    }
+
+    const prestart = wrapper.querySelector('.start-timer');
+    if (prestart) {
+        prestart.classList.remove('fade-out');
+        prestart.classList.add('hidden');
+    }
 
     // ❌ Очистить DOM
     wrapper.querySelector('.definition-bank').innerHTML = '';

@@ -118,6 +118,7 @@ export function initTaskWrapper(wrapper) {
 export function startTaskTimer(taskEl) {
     const timerEl = taskEl.querySelector('.task-live-timer');
     if (!timerEl) return;
+    if (taskEl._timerInterval) return; // 🔒 защита от двойного старта
 
     taskEl._startTime = Date.now();
     taskEl._penalty = taskEl._penalty || 0;
