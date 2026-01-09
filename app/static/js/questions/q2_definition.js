@@ -1,71 +1,72 @@
-import { shuffle, lockQuestionUI, unlockQuestionUi, applyPenalty, showError  } from '../utils/utils.js';
+import { shuffle, lockQuestionUI, unlockQuestionUi, applyPenalty, showError } from '../utils/utils.js';
 import { gameState } from '../engine/state.js';
-import { startLiveTimer, stopTimer, stopTaskTimer } from '../engine/timer.js';
+import { startLiveTimer, stopTaskTimer } from '../engine/timer.js';
 import { saveResult, showResultOverlay } from '../engine/game-engine.js';
 import { getBestTime } from '../api/api.js';
 
+let blocksQ2 = [];
 
-let definition = [];
-export function initQuestion1(wrapper, questionData) {
-    console.log('INIT QUESTION 1', questionData);
+export function initQuestion2(wrapper, questionData) {
+    console.log('INIT QUESTION 2', questionData);
+
     startLiveTimer();
     unlockQuestionUi(wrapper);
-    definition = questionData.definition; 
-    const distractors = questionData.distractors;
 
     const bank = wrapper.querySelector('.definition-bank');
     const drop = wrapper.querySelector('.definition-drop');
 
-    const blocks = shuffle([...definition, ...distractors]);
+    blocksQ2 = questionData.definition;
+    const distractors = questionData.distractors;
+
+    const allBlocks = shuffle([...blocksQ2, ...distractors]);
 
     bank.innerHTML = '';
     drop.innerHTML = '';
 
-    blocks.forEach(text => {
+    allBlocks.forEach(text => {
         const div = document.createElement('div');
         div.className = 'block';
         div.textContent = text;
         div.draggable = !gameState.IS_MOBILE;
         div.addEventListener('click', () => {
-            div.parentElement === bank
-                ? drop.appendChild(div)
-                : bank.appendChild(div);
+            if (div.parentElement === bank) {
+                drop.appendChild(div);
+            } else {
+                bank.appendChild(div);
+            }
         });
-
-        if (!gameState.IS_MOBILE) {
-            div.draggable = true;
-        }
 
         bank.appendChild(div);
     });
 }
 
-export async function checkQuestion1(wrapper, meta) {
+export async function checkQuestion2(wrapper, meta) {
     if (!gameState.taskUnlocked || !gameState.taskStartedAt) return;
 
     const drop = wrapper.querySelector('.definition-drop');
     const blocks = [...drop.children].map(b => b.textContent.trim());
-    // Проверка на условие выполнение задания
+
     const correct =
-        blocks.length === definition.length &&
-        definition.every((p, i) => p === blocks[i]);
-        
+        blocks.length === blocksQ2.length &&
+        blocksQ2.every((b, i) => b === blocks[i]);
+
     const wastedTime = Math.floor((Date.now() - wrapper._startTime) / 1000);
+
     if (correct) {
         wrapper._state.completed = true;
         wrapper._state.locked = true;
         stopTaskTimer(wrapper);
         lockQuestionUI(wrapper);
+
         showResultOverlay(wrapper, {
             current: wastedTime,
             best: await getBestTime(meta.stage, meta.question)
         });
+    } else {
+        applyPenalty(wrapper, 5);
+        showError(wrapper, 'Неправильный ответ');
+        return;
     }
-    else {
-    applyPenalty(wrapper, 5);
-    
-    showError(wrapper, 'Неправильный ответ');
-    return;
-}
+
     saveResult(correct, meta.stage, meta.question, wastedTime);
 }

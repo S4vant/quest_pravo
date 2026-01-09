@@ -117,34 +117,35 @@ export function initTaskWrapper(wrapper) {
 
 export function startTaskTimer(taskEl) {
     const timerEl = taskEl.querySelector('.task-live-timer');
-    
- 
-    taskEl.querySelector('.start-timer').classList.remove('hidden', 'fade-out');
     if (!timerEl) return;
 
     taskEl._startTime = Date.now();
+    taskEl._penalty = taskEl._penalty || 0;
+    taskEl._state = taskEl._state || {};
 
     taskEl._timerInterval = setInterval(() => {
-    const elapsed =
-        Math.floor((Date.now() - taskEl._startTime) / 1000) +
-        (taskEl._penalty || 0);
+        // Если задача уже завершена или заблокирована — ничего не делаем
+        if (taskEl._state.locked) return;
+
+        const elapsed =
+            Math.floor((Date.now() - taskEl._startTime) / 1000) +
+            (taskEl._penalty || 0);
         
-    updateTimerUI(taskEl, elapsed);
+        updateTimerUI(taskEl, elapsed);
 
-    if (elapsed >= 60) {
-        stopTaskTimer(taskEl);
-        showFailOverlay(taskEl, 'Время вышло');
-    }
-}, 500);
+        if (elapsed >= 60) {
+            taskEl._state.locked = true; // сразу блокируем задачу
+            stopTaskTimer(taskEl);
+            showFailOverlay(taskEl, 'Время вышло');
+        }
+    }, 500);
+
     timerEl.classList.remove('hidden');
-    // сохраняем в DOM, а не глобально
-
-    
 }
 
 export function stopTaskTimer(taskEl) {
-    taskEl._endTime = Date.now();
     clearInterval(taskEl._timerInterval);
+    taskEl._endTime = Date.now();
 }
 
 export function formatTime(sec) {
