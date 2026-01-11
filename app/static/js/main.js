@@ -4,11 +4,6 @@ import { initTaskWrapper } from './engine/timer.js';
 import { loadProgress, loadProfile, loadUserProgressOnce,loadStageOnce } from './api/api.js';
 import { resetQuestion } from './utils/utils.js';
 import { stageDataStore } from './engine/stage-data-store.js';
-// import { initQuestion1 } from './stage1/q1_definition.js';
-// import { initStage2 } from './stage1/q2_method.js';
-// import { initStage3 } from './stage1/q3_principles.js';
-// import { initStage4 } from './stage1/q4_violations.js';
-// import { initStage5 } from './stage1/q5_grid.js';
 window.loadProfile = loadProfile;
 
 document.addEventListener('DOMContentLoaded', async () => {

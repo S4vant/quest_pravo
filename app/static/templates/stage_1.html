@@ -216,39 +216,84 @@
         </div>
     </div>
 </section>
-<section class="stage" id="stage-4" >
+<section class="stage" id="stage-4" data-attempt-id="{{ attempt_id }}">
+
     <div class="stage-header">
-        Вопрос 4: Соотнесите нарушения трудового права с ситуациями
+        Вопрос 4: Нарушения трудового законодательства
     </div>
 
     <div class="stage-content" data-question="4" data-stage="1">
+
         <div class="instructions">
-            <strong>Задание:</strong> Перетащите ситуацию к соответствующему нарушению трудового законодательства.
-            <br>Лишние ситуации оставьте в банке.
+            <strong>Задание:</strong> Соотнесите нарушение трудового законодательства с соответствующей ситуацией.
         </div>
 
-        <div style="display:flex; gap:30px; flex-wrap:wrap;">
-            <div style="flex:1; min-width:280px;">
-                <h3>Нарушения</h3>
-                <div id="violations-container"></div>
+        <!-- ===== РЕЗУЛЬТАТ ===== -->
+        <div class="task-result-overlay hidden">
+            <div class="result-card">
+                <h3>Результат</h3>
+
+                <div class="result-times">
+                    <div>
+                        <span class="label">Текущее:</span>
+                        <span class="value current-time"></span>
+                    </div>
+                    <div>
+                        <span class="label">Лучшее:</span>
+                        <span class="value best-time"></span>
+                    </div>
+
+                    <div class="delta-time"></div>
+                    <div class="result-message"></div>
+                </div>
+
+                <button class="btn btn-restart">Пройти заново</button>
+            </div>
+        </div>
+
+        <!-- ===== ОБЛОЖКА ===== -->
+        <div class="task-cover" id="task-cover">
+            <button class="start-task-btn">Начать</button>
+            <div id="start-timer" class="start-timer hidden">3</div>
+        </div>
+
+        <!-- ===== КОНТЕНТ ЗАДАНИЯ ===== -->
+        <div class="task-content hidden" id="task-content">
+
+            <div class="task-timer-wrapper">
+                <div class="task-live-timer">0:00</div>
             </div>
 
-            <div style="flex:1; min-width:280px;">
-                <h3>Ситуации</h3>
-                <div class="blocks-container" id="situations-bank"></div>
+            <!-- СООТНЕСЕНИЕ -->
+            <div class="matching-task">
+
+                <div class="terms-container">
+                    <!-- Термины + drop-зоны создаются JS -->
+                </div>
+
+                <div class="situations-bank">
+                    <!-- Банк ситуаций -->
+                </div>
+
             </div>
+
+            <!-- ДЕЙСТВИЯ -->
+            <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn check-btn">Проверить</button>
+                <button class="btn btn-clear"
+                        onclick="clearDropZone(this.closest('.stage-content'))">
+                    Очистить
+                </button>
+            </div>
+
+            <div class="task-error hidden"></div>
+
         </div>
 
-        <div id="violations-feedback" class="feedback"></div>
-
-        <div style="display:flex; gap:10px;">
-            <button class="btn" onclick="checkViolations()">
-                <i class="fas fa-check"></i> Проверить
-            </button>
-            <button class="btn btn-clear" onclick="resetViolations()">
-                <i class="fas fa-undo"></i> Сбросить
-            </button>
+        <div class="citation">
+            Источник: Трудовой кодекс РФ
         </div>
+
     </div>
 </section>
 <!-- Этап 5: Сетка с источниками трудового права -->
@@ -256,34 +301,67 @@
     <div class="stage-header">
         Вопрос 5: Найдите источники трудового права в сетке
     </div>
-    <div class="stage-content" data-question="5" data-stage="1">
-        <div class="instructions">
-            <strong>Задание:</strong> В сетке спрятаны слова — <u>источники трудового права</u>. Остальные буквы — отвлекающие.
-        </div>
+        <div class="stage-content" data-question="5" data-stage="1">
 
-        <div style="text-align: center; margin: 20px 0;">
-            <div id="word-grid" class="word-grid"></div>
-        </div>
+            <div class="instructions">
+                <strong>Задание:</strong> Соотнесите нарушение трудового законодательства с соответствующей ситуацией.
+            </div>
 
-        <div id="selection-info" style="margin-bottom: 15px; font-size: 1.1em;">
-            Выделено слов: <span id="selected-count">0</span>
-            <span id="selected-words" style="margin-left: 10px; font-weight: bold; color: var(--primary);"></span>
-        </div>
+            <!-- ===== РЕЗУЛЬТАТ ===== -->
+            <div class="task-result-overlay hidden">
+                <div class="result-card">
+                    <h3>Результат</h3>
 
-        <div id="crossword-feedback" class="feedback"></div>
+                    <div class="result-times">
+                        <div>
+                            <span class="label">Текущее:</span>
+                            <span class="value current-time"></span>
+                        </div>
+                        <div>
+                            <span class="label">Лучшее:</span>
+                            <span class="value best-time"></span>
+                        </div>
 
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="btn" id="check-grid-btn" onclick="checkGridSelectionSources()" disabled>
-                <i class="fas fa-check"></i> Проверить
-            </button>
-            <button class="btn btn-clear" onclick="clearGridSelectionSources()">
-                <i class="fas fa-undo"></i> Сбросить выделение
-            </button>
-        </div>
+                        <div class="delta-time"></div>
+                        <div class="result-message"></div>
+                    </div>
 
-        <div class="citation">
-             Источник: онлайн-лекция «Основы трудового права» от Надежды Развейкиной, к.ю.н., доцент.
+                    <button class="btn btn-restart">Пройти заново</button>
+                </div>
+            </div>
+
+            <!-- ===== ОБЛОЖКА ===== -->
+            <div class="task-cover" id="task-cover">
+                <button class="start-task-btn">Начать</button>
+                <div id="start-timer" class="start-timer hidden">3</div>
+            </div>
+            <div class="task-content hidden" id="task-content">
+
+                <div class="task-timer-wrapper">
+                    <div class="task-live-timer">0:00</div>
+                </div>
+            <div class="word-grid"></div>
+
+            <div class="selection-info">
+                Найдено: <span class="selected-count">0</span>
+                <span class="selected-words"></span>
+            </div>
+                        <!-- ДЕЙСТВИЯ -->
+                <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn check-btn">Проверить</button>
+                    <button class="btn btn-clear"
+                            onclick="clearDropZone(this.closest('.stage-content'))">
+                        Очистить
+                    </button>
+                </div>
+
+                <div class="task-error hidden"></div>
         </div>
+        
+            <div class="citation">
+                Источник: онлайн-лекция «Основы трудового права» от Надежды Развейкиной, к.ю.н., доцент.
+            </div>
+        
     </div>
 
     

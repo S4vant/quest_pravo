@@ -137,12 +137,22 @@ body {
 }
 
 .block {
-    padding: 12px 18px;
+
     background: #3a3a3a;
-    border: 2px solid #555;
-    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.9);
+
+    padding: 10px 14px;
+    border-radius: 10px;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.45),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+
     cursor: grab;
-    color: #e0e0e0;
+
+    white-space: normal;
+    word-break: break-word;
+
     transition:
         opacity 2s ease,
         transform 2s cubic-bezier(.2,1.5,.5,1),
@@ -551,4 +561,186 @@ body {
 .task-live-timer {
     font-weight: 600;
     font-size: 14px;
+}
+
+/* ====== ОБЩАЯ СЕТКА ====== */
+
+.matching-task {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 20px;
+    
+}
+
+/* ====== ТЕРМИНЫ ====== */
+
+.terms-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.term-slot {
+    background: #2c2c2c;
+    backdrop-filter: blur(8px);
+    border-radius: 14px;
+    padding: 14px 16px;
+    min-height: 72px;
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.45),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    transition: background 0.2s ease;
+}
+
+.term-slot strong {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* ====== ПЛЕЙСХОЛДЕР ====== */
+
+.drop-placeholder {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.45);
+    opacity: 1;
+}
+
+/* ====== БАНК СИТУАЦИЙ ====== */
+
+.situations-bank {
+    background: #2c2c2c;
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    padding: 16px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* ====== DRAG HOVER (по желанию, но красиво) ====== */
+
+.term-slot.drag-over {
+    background: rgba(50, 55, 65, 0.8);
+}
+
+.situations-bank.drag-over {
+    background: rgba(45, 50, 60, 0.8);
+}
+
+/* ====== АДАПТИВ ====== */
+
+@media (max-width: 900px) {
+    .matching-task {
+        grid-template-columns: 1fr;
+    }
+
+    .situations-bank {
+        order: -1;
+    }
+}
+.term-slot:has(.block) .drop-placeholder {
+    display: none;
+}
+
+/* --- Контейнер сетки --- */
+.word-grid {
+    display: grid;
+    grid-template-columns: repeat(15, 32px); /* 15 колонок по 32px */
+    grid-template-rows: repeat(15, 32px);    /* 15 рядов по 32px */
+    gap: 2px;                                /* небольшие промежутки */
+    justify-content: center;
+    margin: 20px 0;
+}
+
+/* --- Ячейка сетки --- */
+.grid-cell {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #ffffff;  /* базовый фон */
+    border: 1px solid #ccc;     /* светлая рамка */
+    user-select: none;           /* нельзя выделять текст */
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+/* --- Эффект при наведении --- */
+.grid-cell:hover {
+    background-color: #f0f8ff;
+    transform: scale(1.05);
+}
+
+/* --- Выбранная ячейка --- */
+.grid-cell.selected {
+    background-color: #87cefa; /* синий для выбранных */
+    color: #fff;               /* белый текст */
+    font-weight: bold;
+}
+
+/* --- Информация о выбранных словах --- */
+.selection-info {
+    margin-top: 10px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.selection-info .selected-count {
+    font-weight: bold;
+    color: #0077cc;
+}
+
+.selection-info .selected-words {
+    font-style: italic;
+    color: #333;
+}
+
+/* --- Обратная связь проверки --- */
+.crossword-feedback {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    min-height: 24px;
+}
+
+/* --- Успех --- */
+.crossword-feedback.success {
+    color: green;
+}
+
+/* --- Ошибка --- */
+.crossword-feedback.error {
+    color: red;
+}
+
+/* --- Мобильный режим (уменьшаем ячейки) --- */
+@media (max-width: 600px) {
+    .word-grid {
+        grid-template-columns: repeat(15, 24px);
+        grid-template-rows: repeat(15, 24px);
+        gap: 1px;
+    }
+
+    .grid-cell {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
 }
