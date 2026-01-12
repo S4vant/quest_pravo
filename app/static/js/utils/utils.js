@@ -61,40 +61,69 @@ export function clearDropZone(wrapper) {
 export const IS_MOBILE = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
 export function lockQuestionUI(wrapper) {
+    if (!wrapper) return;
+
     const checkBtn = wrapper.querySelector('.check-btn');
+
+    // ===== ЗАДАНИЕ: СООТВЕТСТВИЕ =====
     const bank = wrapper.querySelector('.definition-bank');
     const drop = wrapper.querySelector('.definition-drop');
+    if (bank && drop) {
+        bank.classList.add('disabled');
+        drop.classList.add('disabled');
+        if (checkBtn) checkBtn.disabled = true;
+        return;
+    }
+
+    // ===== ЗАДАНИЕ: ТЕРМИНЫ / СИТУАЦИИ =====
     const terms = wrapper.querySelector('.terms-container');
     const situations = wrapper.querySelector('.situations-bank');
-    // {Хардкод проверки на задание}
-    if (bank && drop){
-    bank.classList.add('disabled');
-    drop.classList.add('disabled');
+    if (terms && situations) {
+        terms.classList.add('disabled');
+        situations.classList.add('disabled');
+        if (checkBtn) checkBtn.disabled = true;
         return;
-    };
-    checkBtn.disabled = true;
-    terms.classList.add('disabled');
-    situations.classList.add('disabled');
+    }
+
+    // ===== ЗАДАНИЕ 5: КРОССВОРД =====
+    const crossword = wrapper.querySelector('.crossword-grid');
+    if (crossword) {
+        crossword.classList.add('disabled');
+
+        // блокируем клики по ячейкам
+        crossword.querySelectorAll('.cell').forEach(cell => {
+            cell.classList.add('disabled');
+            cell.style.pointerEvents = 'none';
+        });
+
+        if (checkBtn) checkBtn.disabled = true;
+        return;
+    }
+
+    // ===== FALLBACK =====
+    if (checkBtn) checkBtn.disabled = true;
 }
+
 
 export function resetQuestion(wrapper) {
 
-    // ❌ Остановить таймер
+    // ===== ОСТАНОВИТЬ ТАЙМЕР =====
     if (wrapper._timerInterval) {
         clearInterval(wrapper._timerInterval);
         wrapper._timerInterval = null;
     }
 
-    // ❌ Очистить состояние
     delete wrapper._startTime;
     delete wrapper._endTime;
     delete wrapper._timerInterval;
-    wrapper._penalty = 0 ;
+
+    wrapper._penalty = 0;
     wrapper._state = {
         completed: false,
         locked: false
     };
 
+    // ===== СБРОС ТАЙМЕРА UI =====
     const timerEl = wrapper.querySelector('.task-live-timer');
     if (timerEl) {
         timerEl.textContent = '00:00';
@@ -107,20 +136,45 @@ export function resetQuestion(wrapper) {
         prestart.classList.add('hidden');
     }
 
-    // ❌ Очистить DOM
+    // ===== СБРОС КРОССВОРДА (ЗАДАНИЕ 5) =====
+    const crossword = wrapper.querySelector('.crossword-grid');
+    if (crossword) {
+        crossword.classList.remove('disabled');
+
+        crossword.querySelectorAll('.cell').forEach(cell => {
+            cell.classList.remove(
+                'selected',
+                'found',
+                'highlight',
+                'disabled'
+            );
+            cell.style.pointerEvents = '';
+        });
+
+        // сброс внутреннего состояния
+        delete wrapper._crosswordState;
+        delete wrapper._selectedCells;
+        delete wrapper._currentWord;
+        
+    }
+
+    // ===== УДАЛЕНИЕ ДИНАМИЧЕСКИХ БЛОКОВ =====
     if (wrapper._blocks) {
         wrapper._blocks.forEach(block => block.remove());
         wrapper._blocks = null;
     }
-    // wrapper.querySelector('.definition-bank').innerHTML = '';
-    // wrapper.querySelector('.definition-drop').innerHTML = '';
 
-    // ❌ Скрыть контент
-    wrapper.querySelector('.task-content').classList.add('hidden');
-    wrapper.querySelector('.task-cover').classList.remove('hidden');
+    // ===== ВОЗВРАТ В COVER =====
+    wrapper.querySelector('.task-content')?.classList.add('hidden');
+    wrapper.querySelector('.task-cover')?.classList.remove('hidden');
 
-    // ❌ Разблокировать кнопку
+    // ===== РАЗБЛОКИРОВКА КНОПКИ =====
+    const checkBtn = wrapper.querySelector('.check-btn');
+    if (checkBtn) {
+        checkBtn.disabled = false;
+    }
 }
+
 
 export async function unlockQuestionUi(wrapper) {
     const checkBtn = wrapper.querySelector('.check-btn');

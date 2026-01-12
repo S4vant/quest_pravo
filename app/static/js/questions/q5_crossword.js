@@ -30,11 +30,15 @@ export function initQuestion5(wrapper, questionData) {
     TARGET_WORDS = questionData.definition;
     ALL_WORDS = [...questionData.definition, ...questionData.distractors];
 
-    WORD_PLACEMENTS = DEFAULT_PLACEMENTS;
+    const { grid: generatedGrid, placements } =
+    placeWordsWithWrap([...questionData.definition, ...questionData.distractors]);
 
-    initGrid();
+    grid = generatedGrid;
+    WORD_PLACEMENTS = placements;
+
+    fillRandomLetters(grid);
     renderGrid(wrapper);
-    updateSelectionInfo();
+    updateSelectionInfo(wrapper);
 }
 
 function initGrid() {
@@ -68,6 +72,56 @@ function initGrid() {
     selectedWords = [];
 }
 
+function fillRandomLetters(grid, gridSize = 15) {
+    const RU = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
+
+    for (let r = 0; r < gridSize; r++)
+        for (let c = 0; c < gridSize; c++)
+            if (grid[r][c] === '.')
+                grid[r][c] = RU[Math.floor(Math.random() * RU.length)];
+}
+
+function placeWordsWithWrap(words, gridSize = 15) {
+    const totalCells = gridSize * gridSize;
+    const grid = Array.from({ length: gridSize }, () => Array(gridSize).fill('.'));
+    const placements = [];
+
+    let cursor = 0; // линейный указатель по сетке
+
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+        if (!word) continue;
+
+        // если слово не помещается целиком — пропускаем
+        if (cursor + word.length > totalCells) {
+            console.warn(`Сетка переполнена, слово пропущено: ${word}`);
+            continue;
+        }
+
+        const cells = [];
+
+        for (let j = 0; j < word.length; j++) {
+            const linear = cursor + j;
+            const row = Math.floor(linear / gridSize);
+            const col = linear % gridSize;
+
+            grid[row][col] = word[j];
+            cells.push({ r: row, c: col });
+        }
+
+        placements.push({
+            index: i,
+            word,
+            cells
+        });
+
+        cursor += word.length + 1; // +1 — небольшой отступ между словами
+    }
+
+    return { grid, placements };
+}
+
+
 function renderGrid(wrapper) {
     const gridEl = wrapper.querySelector('.word-grid');
     gridEl.innerHTML = '';
@@ -79,59 +133,52 @@ function renderGrid(wrapper) {
             cell.textContent = grid[r][c];
             cell.dataset.row = r;
             cell.dataset.col = c;
-            cell.addEventListener('click', () => handleCellClick(r, c));
+            cell.addEventListener('click', () => handleCellClick(wrapper, r, c));
             gridEl.appendChild(cell);
         }
     }
 }
 
-function findWordAt(r, c) {
-    for (const item of WORD_PLACEMENTS) {
-        const { index, row, col, dir } = item;
-        const word = ALL_WORDS[index];
-        if (!word) continue;
 
-        if (dir === "h" && r === row && c >= col && c < col + word.length) {
-            const cells = Array.from({ length: word.length }, (_, i) => ({ r: row, c: col + i }));
-            return { word, cells };
-        }
-        if (dir === "v" && c === col && r >= row && r < row + word.length) {
-            const cells = Array.from({ length: word.length }, (_, i) => ({ r: row + i, c: col }));
-            return { word, cells };
-        }
-    }
-    return null;
+function findWordAt(r, c) {
+    return WORD_PLACEMENTS.find(p =>
+        p.cells.some(cell => cell.r === r && cell.c === c)
+    ) || null;
 }
 
-function handleCellClick(r, c) {
-    const wordInfo = findWordAt(r, c);
-    if (!wordInfo) return;
+function handleCellClick(wrapper, r, c) {
+    const info = findWordAt(r, c);
+    if (!info) return;
 
-    const { word, cells } = wordInfo;
-    const lowerWord = word.toLowerCase();
-    const isSelected = selectedWords.includes(lowerWord);
+    const wordKey = info.word.toLowerCase();
+    const isSelected = selectedWords.includes(wordKey);
 
-    cells.forEach(({ r, c }) => {
-        const el = document.querySelector(`.grid-cell[data-row="${r}"][data-col="${c}"]`);
-        if (el) {
-            el.classList.toggle('selected', !isSelected);
-            el.style.backgroundColor = !isSelected ? '#bee3f8' : 'white';
-        }
+    // подсветка
+    info.cells.forEach(({ r, c }) => {
+        const el = wrapper.querySelector(
+            `.grid-cell[data-row="${r}"][data-col="${c}"]`
+        );
+        if (el) el.classList.toggle('selected', !isSelected);
     });
 
-    if (isSelected) selectedWords = selectedWords.filter(w => w !== lowerWord);
-    else selectedWords.push(lowerWord);
+    if (isSelected) {
+        selectedWords = selectedWords.filter(w => w !== wordKey);
+    } else {
+        selectedWords.push(wordKey);
+    }
 
-    updateSelectionInfo();
+    updateSelectionInfo(wrapper);
 }
 
-function updateSelectionInfo() {
-    const countEl = document.getElementById('selected-count');
-    const wordsEl = document.getElementById('selected-words');
+function updateSelectionInfo(wrapper) {
+    const countEl = wrapper.querySelector('.selected-count');
+    const wordsEl = wrapper.querySelector('.selected-words');
 
     if (countEl) countEl.textContent = selectedWords.length;
     if (wordsEl) {
-        wordsEl.textContent = selectedWords.length ? `(${selectedWords.join(', ')})` : '';
+        wordsEl.textContent = selectedWords.length
+            ? `(${selectedWords.join(', ')})`
+            : '';
     }
 }
 
@@ -145,7 +192,7 @@ export function checkQuestion5(wrapper, meta) {
     const extra = [...user].filter(w => !required.has(w));
 
     const feedback = wrapper.querySelector('.crossword-feedback');
-
+    if (!feedback) return;
     const correct = !missing.length && !extra.length;
     const wastedTime = Math.floor((Date.now() - wrapper._startTime) / 1000);
     const prevBest = getBestTime(meta.stage, meta.question);
@@ -157,7 +204,10 @@ export function checkQuestion5(wrapper, meta) {
         wrapper._state.locked = true;
         stopTaskTimer(wrapper);
         lockQuestionUI(wrapper);
-        showSuccessOverlay(wrapper);
+        showResultOverlay(wrapper, {
+            current: wastedTime,
+            best: progressStore.getBest(meta.stage, meta.question)
+        });
     } else {
         let msg = '❌ Ошибки:';
         if (missing.length) msg += ` Отсутствуют: ${missing.join(', ')}`;
