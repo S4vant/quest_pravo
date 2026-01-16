@@ -38,39 +38,32 @@ export function initQuestion5(wrapper, questionData) {
 
     fillRandomLetters(grid);
     renderGrid(wrapper);
-    updateSelectionInfo(wrapper);
 }
 
-function initGrid() {
-    // очищаем сетку
-    grid = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill('.'));
-
-    // размещаем слова по DEFAULT_PLACEMENTS
-    WORD_PLACEMENTS.forEach(({ index, row, col, dir }) => {
-        const word = ALL_WORDS[index];
-        if (!word) return;
-
-        for (let i = 0; i < word.length; i++) {
-            const r = dir === 'h' ? row : row + i;
-            const c = dir === 'h' ? col + i : col;
-            if (r < GRID_SIZE && c < GRID_SIZE) {
-                grid[r][c] = word[i];
-            }
-        }
-    });
-
-    // заполняем пустые клетки случайными буквами
-    const RU = "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-    for (let r = 0; r < GRID_SIZE; r++) {
-        for (let c = 0; c < GRID_SIZE; c++) {
-            if (grid[r][c] === '.') {
-                grid[r][c] = RU[Math.floor(Math.random() * RU.length)];
-            }
-        }
-    }
-
-    selectedWords = [];
+function getSelectedWords(wrapper) {
+    const el = wrapper.querySelector('.selected-words');
+    if (!el || !el.dataset.words) return [];
+    return el.dataset.words.split(',').filter(Boolean);
 }
+
+function setSelectedWords(wrapper, words) {
+    const el = wrapper.querySelector('.selected-words');
+    if (!el) return;
+
+    el.dataset.words = words.join(',');
+    wrapper.querySelector('.selected-count').textContent = words.length;
+    el.textContent = words.length ? `(${words.join(', ')})` : '';
+}
+
+export function clearSelectedWords(wrapper) {
+    const el = wrapper.querySelector('.selected-words');
+
+    if (!el) return;
+
+    el.dataset.words = '';
+    el.textContent = '';
+}
+
 
 function fillRandomLetters(grid, gridSize = 15) {
     const RU = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
@@ -86,13 +79,14 @@ function placeWordsWithWrap(words, gridSize = 15) {
     const grid = Array.from({ length: gridSize }, () => Array(gridSize).fill('.'));
     const placements = [];
 
-    let cursor = 0; // линейный указатель по сетке
+    const wordsCopy = shuffle([...words]);
+    const sumLength = wordsCopy.reduce((a, w) => a + w.length, 0);
 
-    for (let i = 0; i < words.length; i++) {
-        const word = words[i];
-        if (!word) continue;
+    let cursor = 0;
+    let i =0;
 
-        // если слово не помещается целиком — пропускаем
+    for (const word of wordsCopy) {
+        i++;
         if (cursor + word.length > totalCells) {
             console.warn(`Сетка переполнена, слово пропущено: ${word}`);
             continue;
@@ -102,25 +96,25 @@ function placeWordsWithWrap(words, gridSize = 15) {
 
         for (let j = 0; j < word.length; j++) {
             const linear = cursor + j;
-            const row = Math.floor(linear / gridSize);
-            const col = linear % gridSize;
-
-            grid[row][col] = word[j];
-            cells.push({ r: row, c: col });
+            const r = Math.floor(linear / gridSize);
+            const c = linear % gridSize;
+            grid[r][c] = word[j];
+            cells.push({ r, c });
         }
 
-        placements.push({
-            index: i,
-            word,
-            cells
-        });
+        placements.push({index: i, word, cells });
 
-        cursor += word.length + 1; // +1 — небольшой отступ между словами
+        const maxGap = Math.floor((totalCells - sumLength - cursor)/(words.length-i));
+        const gap = maxGap > 0 ? getRandomInt(maxGap + 1) : 1;
+        cursor += word.length + gap;
     }
 
     return { grid, placements };
 }
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
 
 function renderGrid(wrapper) {
     const gridEl = wrapper.querySelector('.word-grid');
@@ -151,9 +145,9 @@ function handleCellClick(wrapper, r, c) {
     if (!info) return;
 
     const wordKey = info.word.toLowerCase();
-    const isSelected = selectedWords.includes(wordKey);
+    const selected = getSelectedWords(wrapper);
+    const isSelected = selected.includes(wordKey);
 
-    // подсветка
     info.cells.forEach(({ r, c }) => {
         const el = wrapper.querySelector(
             `.grid-cell[data-row="${r}"][data-col="${c}"]`
@@ -161,14 +155,13 @@ function handleCellClick(wrapper, r, c) {
         if (el) el.classList.toggle('selected', !isSelected);
     });
 
-    if (isSelected) {
-        selectedWords = selectedWords.filter(w => w !== wordKey);
-    } else {
-        selectedWords.push(wordKey);
-    }
+    const updated = isSelected
+        ? selected.filter(w => w !== wordKey)
+        : [...selected, wordKey];
 
-    updateSelectionInfo(wrapper);
+    setSelectedWords(wrapper, updated);
 }
+
 
 function updateSelectionInfo(wrapper) {
     const countEl = wrapper.querySelector('.selected-count');
@@ -183,10 +176,11 @@ function updateSelectionInfo(wrapper) {
 }
 
 export function checkQuestion5(wrapper, meta) {
-    if (!gameState.taskUnlocked || !gameState.taskStartedAt) return;
+    if (!gameState.taskUnlocked || !gameState.taskStartedAt) return(console.log("ошибка checkQuestion5"));
 
     const required = new Set(TARGET_WORDS.map(w => w.toLowerCase()));
-    const user = new Set(selectedWords);
+    const user = new Set(getSelectedWords(wrapper));
+
 
     const missing = [...required].filter(w => !user.has(w));
     const extra = [...user].filter(w => !required.has(w));
@@ -219,4 +213,5 @@ export function checkQuestion5(wrapper, meta) {
     if (isNewBest) {
         saveResult(true, meta.stage, meta.question, wastedTime);
     }
+    selectedWords = [];
 }

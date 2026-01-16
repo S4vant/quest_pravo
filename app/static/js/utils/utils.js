@@ -137,25 +137,24 @@ export function resetQuestion(wrapper) {
     }
 
     // ===== СБРОС КРОССВОРДА (ЗАДАНИЕ 5) =====
-    const crossword = wrapper.querySelector('.crossword-grid');
-    if (crossword) {
-        crossword.classList.remove('disabled');
+    const el = wrapper.querySelector('.selected-words');
+    
+    if (el) {
+        wrapper.querySelector('.selected-count').textContent = '0';
+        el.dataset.words = '';
+        el.textContent = '';
+    };
 
-        crossword.querySelectorAll('.cell').forEach(cell => {
-            cell.classList.remove(
-                'selected',
-                'found',
-                'highlight',
-                'disabled'
-            );
-            cell.style.pointerEvents = '';
-        });
 
-        // сброс внутреннего состояния
-        delete wrapper._crosswordState;
-        delete wrapper._selectedCells;
-        delete wrapper._currentWord;
-        
+    // ❌ убрать подсветку с сетки
+    wrapper.querySelectorAll('.grid-cell.selected')
+        .forEach(el => el.classList.remove('selected'));
+
+    // ❌ очистить фидбек
+    const feedback = wrapper.querySelector('.crossword-feedback');
+    if (feedback) {
+        feedback.textContent = '';
+        feedback.className = 'crossword-feedback';
     }
 
     // ===== УДАЛЕНИЕ ДИНАМИЧЕСКИХ БЛОКОВ =====
