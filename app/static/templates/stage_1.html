@@ -72,6 +72,10 @@
                         <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
                             <button class="btn check-btn">Проверить</button>
                             <button class="btn btn-clear" onclick="clearDropZone(this.closest('.stage-content'))">Очистить</button>
+                            <div class="hint-wrapper">
+                                <button class="hint-btn" data-hint="Правильный ответ">?</button>
+                                <div class="hint-popup hidden"></div>
+                            </div> 
 
                         </div>
 
@@ -139,6 +143,7 @@
                         <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
                             <button class="btn check-btn">Проверить</button>
                             <button class="btn btn-clear" onclick="clearDropZone(this.closest('.stage-content'))">Очистить</button>
+                            <div class="hint-wrapper"><button class="hint-btn" data-hint="Правильный ответ">?</button><div class="hint-popup hidden"></div></div> 
 
                         </div>
 
@@ -205,7 +210,10 @@
                         <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
                             <button class="btn check-btn">Проверить</button>
                             <button class="btn btn-clear" onclick="clearDropZone(this.closest('.stage-content'))">Очистить</button>
-
+                            <div class="hint-wrapper">
+                                <button class="hint-btn" data-hint="Правильный ответ здесь">?</button>
+                                <div class="hint-popup hidden"></div>
+                            </div>
                         </div>
 
                         <div class="task-error hidden"></div>   
@@ -284,6 +292,10 @@
                         onclick="clearDropZone(this.closest('.stage-content'))">
                     Очистить
                 </button>
+                <div class="hint-wrapper">
+                    <button class="hint-btn" data-hint="Правильный ответ">?</button>
+                    <div class="hint-popup hidden"></div>
+                </div>               
             </div>
 
             <div class="task-error hidden"></div>

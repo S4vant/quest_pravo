@@ -4,7 +4,7 @@ import { startLiveTimer, stopTaskTimer } from '../engine/timer.js';
 import { saveResult, showResultOverlay } from '../engine/game-engine.js';
 import { getBestTime } from '../api/api.js';
 import { progressStore } from '../engine/progress-store.js';
-
+import {initTaskHints } from '../engine/hints.js';
 let pairs = [];
 
 export function initQuestion4(wrapper, questionData) {
@@ -18,10 +18,12 @@ export function initQuestion4(wrapper, questionData) {
 
     const termsContainer = wrapper.querySelector('.terms-container');
     const bank = wrapper.querySelector('.situations-bank');
-
     termsContainer.innerHTML = '';
     bank.innerHTML = '';
-
+    const hintText = pairs
+    .map(p => `${p.def} → ${p.term}`)
+    .join('\n');
+    initTaskHints(wrapper, hintText);
     // Создаём слоты терминов
     pairs.forEach(p => {
         const slot = document.createElement('div');

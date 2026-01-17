@@ -208,9 +208,10 @@ export function failTask(wrapper, reason) {
     showFailOverlay(wrapper, reason);
 }
 
-export function applyPenalty(wrapper, seconds) {
+export function applyPenalty(wrapper, seconds, message) {
     wrapper._penalty = (wrapper._penalty || 0) + seconds;
-    showPenalty(wrapper, "5");
+    if (!message) message = `+${seconds}`;
+    showPenalty(wrapper, message);
 }
 
 export function showError(wrapper, text) {
@@ -233,7 +234,7 @@ export function showPenalty(taskEl, amount) {
 
     const penaltyEl = document.createElement('div');
     penaltyEl.className = 'penalty-float';
-    penaltyEl.textContent = `+${amount}`;
+    penaltyEl.textContent = `${amount}`;
 
     container.appendChild(penaltyEl);
 

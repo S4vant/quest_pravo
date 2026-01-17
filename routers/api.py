@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from ..app.schemas import StartQuest, AnswerData, QuestionResult
 from ..app.db import get_db
 from ..app.models import User, Attempt, AnswerLog
-
+from ..app.service import update_user_rating
 templates = Jinja2Templates(directory="app/static/templates")
 router = APIRouter(tags=["api"], prefix="/api")
 
@@ -142,9 +142,16 @@ async def log_answer(
 
         # Если существующий неправильный → обновляем на правильный
         if not existing.is_correct:
+            old_time = None
             existing.is_correct = True
             existing.wasted_time = answer_time
             db.commit()
+            update_user_rating(
+                db,
+                existing.attempt.user_id,
+                old_time,
+                answer_time
+            )
             print("Updated incorrect to correct!")
             return {"saved": True}
 
@@ -152,6 +159,12 @@ async def log_answer(
         if is_correct and existing.is_correct:
             if answer_time < existing.wasted_time:
                 existing.wasted_time = answer_time
+                update_user_rating(
+                    db,
+                    existing.attempt.user_id,
+                    existing.wasted_time,# old_time
+                    answer_time
+                )
                 db.commit()
                 print("Updated best time!")
                 return {"saved": True}
@@ -167,6 +180,12 @@ async def log_answer(
             question_number=question_number,
             is_correct=is_correct,
             wasted_time=answer_time,
+        )
+        update_user_rating(
+            db,
+            new_log.attempt.user_id,
+            None,
+            answer_time
         )
         db.add(new_log)
         db.commit()

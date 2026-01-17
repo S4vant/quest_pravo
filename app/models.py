@@ -17,6 +17,7 @@ class User(Base):
     full_name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
 
+    rating = Column(Integer, default=0, nullable=False)
     attempts = relationship("Attempt", back_populates="user")
 
 

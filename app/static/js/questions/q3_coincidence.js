@@ -4,7 +4,7 @@ import { startLiveTimer, stopTaskTimer } from '../engine/timer.js';
 import { saveResult, showResultOverlay } from '../engine/game-engine.js';
 import { getBestTime } from '../api/api.js';
 import { progressStore } from '../engine/progress-store.js';
-
+import {initTaskHints } from '../engine/hints.js';
 let principlesBlocks = [];
 
 export function initQuestion3(wrapper, questionData) {
@@ -17,7 +17,7 @@ export function initQuestion3(wrapper, questionData) {
 
     principlesBlocks = questionData.definition;
     const distractors = questionData.distractors;
-
+    initTaskHints(wrapper, 'Правильный ответ: ' + principlesBlocks.join(' '));
     const allBlocks = shuffle([...principlesBlocks, ...distractors]);
 
     bank.innerHTML = '';

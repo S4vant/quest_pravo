@@ -4,7 +4,7 @@ import { startLiveTimer, stopTaskTimer } from '../engine/timer.js';
 import { saveResult, showResultOverlay } from '../engine/game-engine.js';
 import { getBestTime } from '../api/api.js';
 import { progressStore } from '../engine/progress-store.js';
-
+import {initTaskHints } from '../engine/hints.js';
 let blocksQ2 = [];
 
 export function initQuestion2(wrapper, questionData) {
@@ -18,7 +18,7 @@ export function initQuestion2(wrapper, questionData) {
 
     blocksQ2 = questionData.definition;
     const distractors = questionData.distractors;
-
+    initTaskHints(wrapper, 'Правильный ответ: ' +blocksQ2.map(b => `[${b}]`));
     const allBlocks = shuffle([...blocksQ2, ...distractors]);
 
     bank.innerHTML = '';

@@ -4,19 +4,20 @@ import { startLiveTimer, stopTimer, stopTaskTimer } from '../engine/timer.js';
 import { saveResult, showResultOverlay } from '../engine/game-engine.js';
 import { getBestTime } from '../api/api.js';
 import { progressStore } from '../engine/progress-store.js';
-
+import {initTaskHints } from '../engine/hints.js';
 
 let definition = [];
 export function initQuestion1(wrapper, questionData) {
     console.log('INIT QUESTION 1', questionData);
     startLiveTimer();
     unlockQuestionUi(wrapper);
+    
     definition = questionData.definition; 
     const distractors = questionData.distractors;
 
     const bank = wrapper.querySelector('.definition-bank');
     const drop = wrapper.querySelector('.definition-drop');
-
+    initTaskHints(wrapper, 'Правильный ответ: ' + definition.join(' '));
     const blocks = shuffle([...definition, ...distractors]);
 
     bank.innerHTML = '';
