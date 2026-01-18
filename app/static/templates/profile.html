@@ -13,82 +13,113 @@
     <p>Профиль игрока и этапы прохождения</p>
 </header>
 
-<main class="game">
+<div class="layout">
 
-    <!-- ПРОФИЛЬ -->
-    <section class="card fade-in">
-        <h2>Профиль игрока</h2>
+    <!-- БОКОВАЯ ПАНЕЛЬ -->
+    <aside class="sidebar">
+        <h3>🏆 Лидеры</h3>
 
-        <div class="profile-info">
-            <p class="profile-name">{{ full_name }}</p>
-            <p class="profile-email">{{ email }}</p>
-        </div>
+        <table class="leaderboard">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Игрок</th>
+                    <th>Очки</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <tr>
+                    <td colspan="3">Загрузка...</td>
+                </tr>
+            </tbody>
+        </table>
 
-        <button class="primary-btn" onclick="startAttempt()">
-            ▶ Продолжить квест
+        <button class="secondary-btn" onclick="history.back()">
+            ← Назад
         </button>
-    </section>
+    </aside>
 
-    <!-- ЭТАПЫ -->
-    <h3>Этапы квеста</h3>
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main class="game">
 
-    <div class="stage-card">
-        <div class="stage-header">
-            <span class="stage-num">1</span>
-            <div>
-                <h4>Трудовое право как отрасль права</h4>
-                <p>Базовые понятия и принципы</p>
+        <!-- ПРОФИЛЬ -->
+        <section class="card fade-in">
+            <h2>Профиль игрока</h2>
+
+            <div class="profile-info">
+                <p class="profile-name">{{ full_name }}</p>
+                <p class="profile-email">{{ email }}</p>
             </div>
+
+            <button class="primary-btn" onclick="startAttempt()">
+                ▶ Продолжить квест
+            </button>
+        </section>
+
+        <!-- ЭТАПЫ -->
+        <h3>Этапы квеста</h3>
+
+        <!-- ЭТАП 1 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <span class="stage-num">1</span>
+                <div>
+                    <h4>Трудовое право как отрасль права</h4>
+                    <p>Базовые понятия и принципы</p>
+                </div>
+            </div>
+
+            <div class="progress-wrapper">
+                <label>Прогресс выполнения заданий:</label>
+                <div class="progress">
+                    <div id="progress-stage-1" class="progress-bar" style="width: 0%">0%</div>
+                </div>
+            </div>
+
+            <span class="stage-btn" onclick="startStage(1)">Перейти</span>
         </div>
 
-        <div class="progress-wrapper">
-    <label for="progress">Прогресс выполнения заданий:</label>
-    <div class="progress">
-        
-        <div id="progress-stage-1" class="progress-bar" style="width: 0%;">0%</div>
-    </div>
-    
-</div>
-
-        <span class="stage-btn" onclick="startStage(1)">Перейти</span>
-    </div>
-
-    <div class="stage-card">
-        <div class="stage-header">
-            <span class="stage-num">2</span>
-            <div>
-                <h4>Трудовой договор</h4>
+        <!-- ЭТАП 2 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <span class="stage-num">2</span>
+                <div>
+                    <h4>Трудовой договор</h4>
+                </div>
             </div>
-        </div>
-        <div class="progress-wrapper">
-    <label for="progress">Прогресс выполнения заданий:</label>
-    <div class="progress">
-        <div id="progress-stage-2" class="progress-bar" style="width: 0%;">0%</div>
-    </div>
-    
-</div>
 
-        <span class="stage-btn" onclick="startStage(2)">Перейти</span>
-    </div>
-<div class="stage-card">
-        <div class="stage-header">
-            <span class="stage-num">3</span>
-            <div>
-                <h4>Дисциплина труда</h4>
-                <p>Заключение и оформление</p>
+            <div class="progress-wrapper">
+                <label>Прогресс выполнения заданий:</label>
+                <div class="progress">
+                    <div id="progress-stage-2" class="progress-bar" style="width: 0%">0%</div>
+                </div>
             </div>
-        </div>
-        <div class="progress-wrapper">
-    <label for="progress">Прогресс выполнения заданий:</label>
-    <div class="progress">
-        <div id="progress-stage-3" class="progress-bar" style="width: 0%;">0%</div>
-    </div>
-    
-</div>
 
-        <span class="stage-btn" onclick="startStage(3)">Перейти</span>
-    </div>
-</main>
+            <span class="stage-btn" onclick="startStage(2)">Перейти</span>
+        </div>
+
+        <!-- ЭТАП 3 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <span class="stage-num">3</span>
+                <div>
+                    <h4>Дисциплина труда</h4>
+                    <p>Заключение и оформление</p>
+                </div>
+            </div>
+
+            <div class="progress-wrapper">
+                <label>Прогресс выполнения заданий:</label>
+                <div class="progress">
+                    <div id="progress-stage-3" class="progress-bar" style="width: 0%">0%</div>
+                </div>
+            </div>
+
+            <span class="stage-btn" onclick="startStage(3)">Перейти</span>
+        </div>
+
+    </main>
+</div>
 
 <footer class="main-footer">
     <p>© Учебный квест • Трудовое право</p>

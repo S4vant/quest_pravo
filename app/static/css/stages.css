@@ -250,3 +250,72 @@ input {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+.layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+    align-items: start;
+}
+.sidebar {
+    background: #111;
+    border-radius: 12px;
+    padding: 16px;
+
+    position: sticky;
+    top: 24px;
+
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+}
+
+
+/* Левая панель */
+.leaderboard-panel {
+    background: #111;
+    border-radius: 12px;
+    padding: 16px;
+    color: #fff;
+    height: fit-content;
+}
+
+.leaderboard-panel h3 {
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+/* Кнопка назад */
+.back-btn {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #222;
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background: #333;
+}
+
+.leaderboard {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
+}
+
+.leaderboard th,
+.leaderboard td {
+    padding: 6px 8px;
+    text-align: left;
+}
+
+.leaderboard tr:nth-child(even) {
+    background: rgba(255,255,255,0.05);
+}

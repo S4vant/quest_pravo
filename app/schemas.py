@@ -39,3 +39,16 @@ class AnswerData(BaseModel):
     
     correct: bool
     wasted_time: int
+class LeaderboardUser(BaseModel):
+    position: int
+    user_id: int
+    full_name: str
+    rating: int
+
+    class Config:
+        from_attributes = True
+
+class User(BaseModel):
+    full_name: str
+    email: str
+    rating: int

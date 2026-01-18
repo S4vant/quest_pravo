@@ -1,6 +1,7 @@
 import { questionHandlers } from './questions/index.js';
 import { setupDragAndDrop, clearDropZone} from './utils/utils.js';
 import { initTaskWrapper } from './engine/timer.js';
+import {loadLeaderboard} from './engine/leader.js';
 import { loadProgress, loadProfile, loadUserProgressOnce,loadStageOnce } from './api/api.js';
 import { resetQuestion } from './utils/utils.js';
 import { stageDataStore } from './engine/stage-data-store.js';
@@ -9,6 +10,8 @@ window.loadProfile = loadProfile;
 document.addEventListener('DOMContentLoaded', async () => {
 
     await loadProgress();
+    if (document.querySelector('.leaderboard')) await loadLeaderboard();
+
     const wrappers = document.querySelectorAll(
         '.stage-content[data-stage][data-question]'
     );

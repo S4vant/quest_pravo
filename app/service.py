@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends
 from ..app.db import get_db
+from .models import User
 def calc_question_score(wasted_time: int) -> int:
     if wasted_time <= 0:
         return 0
@@ -12,7 +13,7 @@ def update_user_rating(
     old_time: int | None,
     new_time: int
 ):
-    from app.models import User
+    
 
     user = db.query(User).filter(User.id == user_id).first()
     if not user:

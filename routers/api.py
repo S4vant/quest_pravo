@@ -1,10 +1,10 @@
 from datetime import datetime
-from fastapi import Request
+from fastapi import Request, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from ..app.schemas import StartQuest, AnswerData, QuestionResult
+from ..app.schemas import StartQuest, AnswerData, QuestionResult, LeaderboardUser
 from ..app.db import get_db
 from ..app.models import User, Attempt, AnswerLog
 from ..app.service import update_user_rating
@@ -43,7 +43,7 @@ def profile_page(request: Request):
         {
             "request": request,
             "full_name": request.session.get("full_name"),
-            "email": request.session.get("email")
+            "email": request.session.get("email"),
         }
     )
 @router.get("/debug-session")
@@ -124,6 +124,9 @@ async def log_answer(
     db: Session = Depends(get_db)
 ):
     attempt_id = request.session.get("attempt_id")
+    attempt = db.query(Attempt).filter(Attempt.id == attempt_id).first()
+    if not attempt:
+        raise HTTPException(status_code=400, detail="Attempt not found")
     answer_time = data.wasted_time
     is_correct = data.correct
 
@@ -148,7 +151,7 @@ async def log_answer(
             db.commit()
             update_user_rating(
                 db,
-                existing.attempt.user_id,
+                attempt.user_id,
                 old_time,
                 answer_time
             )
@@ -161,7 +164,7 @@ async def log_answer(
                 existing.wasted_time = answer_time
                 update_user_rating(
                     db,
-                    existing.attempt.user_id,
+                    attempt.user_id,
                     existing.wasted_time,# old_time
                     answer_time
                 )
@@ -183,7 +186,7 @@ async def log_answer(
         )
         update_user_rating(
             db,
-            new_log.attempt.user_id,
+            attempt.user_id,
             None,
             answer_time
         )
@@ -227,3 +230,46 @@ async def logout(
     request.session.clear()
     return {"ok": True}
 
+
+@router.get("/leaderboard", response_model=list[LeaderboardUser])
+def get_leaderboard(
+    limit: int = 50,
+    db: Session = Depends(get_db)
+):
+    users = (
+        db.query(User)
+        .order_by(User.rating.desc())
+        .limit(limit)
+        .all()
+    )
+
+    leaderboard = []
+    for idx, user in enumerate(users, start=1):
+        leaderboard.append(
+            LeaderboardUser(
+                position=idx,
+                user_id=user.id,
+                full_name=user.full_name,
+                rating=user.rating
+            )
+        )
+
+    return leaderboard
+
+@router.get("/user")
+async def get_user(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    data = request.session.get("user_id")
+    user = db.query(User).filter_by(id=data).first()
+    return user
+
+@router.get("/user/rating")
+async def get_user_rating(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    data = request.session.get("user_id")
+    user = db.query(User).filter_by(id=data).first()
+    return {"rating": user.rating}
