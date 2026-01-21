@@ -5,17 +5,93 @@
     <title>Квест «Трудовое право»</title>
     <link rel="stylesheet" href="/static/css/stages.css">
     <link rel="icon" href="/static/favicon.png">
+    <style>
+        /* --- Локальные стили для /quest --- */
+        .layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .game {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #player-form {
+            max-width: 480px;
+            width: 100%;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+        }
+
+        .error-text {
+            color: #ff6b6b;
+            margin-top: 6px;
+        }
+
+        .competition-text {
+            font-size: 14px;
+            color: #ccc;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .leaderboard-card {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        .leaderboard-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            color: #6c63ff;
+            text-align: center;
+        }
+
+        .leaderboard {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .leaderboard th, .leaderboard td {
+            padding: 6px 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .leaderboard th {
+            font-weight: 600;
+            color: #6c63ff;
+        }
+
+        .leaderboard td {
+            color: #eee;
+        }
+
+        .leaderboard tbody tr:nth-child(even) {
+            background: rgba(108, 99, 255, 0.05);
+        }
+    </style>
 </head>
 <body>
-
-<header class="main-header">
-    <h1>🧠 Квест по трудовому праву</h1>
-    <p>Интерактивное прохождение учебных этапов</p>
-</header>
-
+<div class="layout">
 <main class="game">
 
-    <!-- ВХОД -->
+    <header class="main-header">
+        <h1>🧠 Квест по трудовому праву</h1>
+        
+    </header>
+    <section class="leaderboard-card">
+    <!-- Форма логина / регистрации -->
     <section id="player-form" class="card fade-in">
         <h2>Вход в квест</h2>
 
@@ -35,25 +111,39 @@
 
         <p id="form-error" class="error-text"></p>
     </section>
+    
+        <p class="competition-text">
+            Посоревнуйтесь в знании трудового законодательства с другими студентами! 
+            Станьте лидером! 
+            Тогда ваш рейтинг будет показан остальным игрокам!.
+        </p>
+    </section>
+    <!-- Таблица рейтинга -->
+    <section class="leaderboard-card">
+        
+        <h3>🏆 Рейтинг игроков</h3>
+        <table class="leaderboard">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Игрок</th>
+                    <th>Очки</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <tr>
+                    <td colspan="3">Загрузка...</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 
-    <!-- ПРОФИЛЬ -->
-    <section id="profile" class="card fade-in" style="display:none;">
-    <h2>Профиль игрока</h2>
-
-    <div class="profile-info">
-        <p class="profile-name" id="p-name"></p>
-        <p class="profile-email" id="p-email"></p>
-    </div>
-
-    <button id="start-btn" class="primary-btn" onclick="startAttempt()">
-        Начать квест
-    </button>
-</section>
-
+</main>
+</div>
 <footer class="main-footer">
     <p>© Учебный квест • Трудовое право</p>
 </footer>
 
-    <script type="module" src="/static/js/main.js"></script>
+<script type="module" src="/static/js/main.js"></script>
 </body>
 </html>

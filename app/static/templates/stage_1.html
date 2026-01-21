@@ -6,14 +6,15 @@
         <link rel="stylesheet" href="/static/css/questions.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link rel="stylesheet" href="/static/css/timer.css">
+        <link rel="icon" href="/static/favicon.png">
 </head>
 <body>
     <!-- Левая боковая панель -->
     <div class="stage-sidebar">
     <p><a href="/api/profile"><i class="fas fa-user"></i> Вернуться в профиль</a></p>
-    <p><a href="/stage/1"><strong>Этап 1:</strong> Соберите определение трудового права</a></p>
-    <p><a href="/stage/2">Этап 2: Метод трудового права</a></p>
-    <p><a href="/stage/3">Этап 3: Правила трудового законодательства</a></p>
+    <p><a href="/stage/1"><strong>Этап 1:Соберите определение трудового права</strong> </a></p>
+    <p><a href="/stage/2">Этап 2: Трудовой договор</a></p>
+    <p><a href="/stage/3">Этап 3: Дисциплина труда</a></p>
     </div>
     
     <div class="container">
@@ -52,7 +53,21 @@
                 </div>  
 
                 <div class="task-cover" id="task-cover">
+
+                    <div class="task-hint task-hint-time" data-hint="time"></div>
+
+                    
+                    <div class="task-hint task-hint-penalty" data-hint="penalty"></div>
+
                     <button class="start-task-btn">Начать</button>
+
+                    <div class="task-hint task-hint-help" data-hint="help"></div>
+                    
+
+                    <div class="task-hint task-hint-score" data-hint="score"></div>
+
+                    <div class="task-record" data-hint="record"></div>
+
                     <div id="start-timer" class="start-timer hidden">3</div>
                 </div>
 
@@ -123,7 +138,21 @@
                 </div>  
 
                 <div class="task-cover" id="task-cover">
+
+                    <div class="task-hint task-hint-time" data-hint="time"></div>
+
+                    
+                    <div class="task-hint task-hint-penalty" data-hint="penalty"></div>
+
                     <button class="start-task-btn">Начать</button>
+
+                    <div class="task-hint task-hint-help" data-hint="help"></div>
+                    
+
+                    <div class="task-hint task-hint-score" data-hint="score"></div>
+
+                    <div class="task-record" data-hint="record"></div>
+
                     <div id="start-timer" class="start-timer hidden">3</div>
                 </div>
 
@@ -190,7 +219,21 @@
                 </div>  
 
                 <div class="task-cover" id="task-cover">
+
+                    <div class="task-hint task-hint-time" data-hint="time"></div>
+
+                    
+                    <div class="task-hint task-hint-penalty" data-hint="penalty"></div>
+
                     <button class="start-task-btn">Начать</button>
+
+                    <div class="task-hint task-hint-help" data-hint="help"></div>
+                    
+
+                    <div class="task-hint task-hint-score" data-hint="score"></div>
+
+                    <div class="task-record" data-hint="record"></div>
+
                     <div id="start-timer" class="start-timer hidden">3</div>
                 </div>
 
@@ -261,9 +304,23 @@
 
         <!-- ===== ОБЛОЖКА ===== -->
         <div class="task-cover" id="task-cover">
-            <button class="start-task-btn">Начать</button>
-            <div id="start-timer" class="start-timer hidden">3</div>
-        </div>
+
+                    <div class="task-hint task-hint-time" data-hint="time"></div>
+
+                    
+                    <div class="task-hint task-hint-penalty" data-hint="penalty"></div>
+
+                    <button class="start-task-btn">Начать</button>
+
+                    <div class="task-hint task-hint-help" data-hint="help"></div>
+                    
+
+                    <div class="task-hint task-hint-score" data-hint="score"></div>
+
+                    <div class="task-record" data-hint="record"></div>
+
+                    <div id="start-timer" class="start-timer hidden">3</div>
+                </div>
 
         <!-- ===== КОНТЕНТ ЗАДАНИЯ ===== -->
         <div class="task-content hidden" id="task-content">
@@ -311,12 +368,12 @@
 <!-- Этап 5: Сетка с источниками трудового права -->
 <section class="stage" id="stage-5" >
     <div class="stage-header">
-        Вопрос 5: Найдите источники трудового права в сетке
+        Вопрос 5: Найдите источники трудового права
     </div>
         <div class="stage-content" data-question="5" data-stage="1">
 
             <div class="instructions">
-                <strong>Задание:</strong> Соотнесите нарушение трудового законодательства с соответствующей ситуацией.
+                <strong>Задание:</strong> Найдите источники трудового права в сетке кроссворда.
             </div>
 
             <!-- ===== РЕЗУЛЬТАТ ===== -->
@@ -344,9 +401,23 @@
 
             <!-- ===== ОБЛОЖКА ===== -->
             <div class="task-cover" id="task-cover">
-                <button class="start-task-btn">Начать</button>
-                <div id="start-timer" class="start-timer hidden">3</div>
-            </div>
+
+                    <div class="task-hint task-hint-time" data-hint="time"></div>
+
+                    
+                    <div class="task-hint task-hint-penalty" data-hint="penalty"></div>
+
+                    <button class="start-task-btn">Начать</button>
+
+                    <div class="task-hint task-hint-help" > В этом задании нет подсказок)</div>
+                    
+
+                    <div class="task-hint task-hint-score" data-hint="score"></div>
+
+                    <div class="task-record" data-hint="record"></div>
+
+                    <div id="start-timer" class="start-timer hidden">3</div>
+                </div>
             <div class="task-content hidden" id="task-content">
 
                 <div class="task-timer-wrapper">
@@ -362,10 +433,6 @@
                         <!-- ДЕЙСТВИЯ -->
                 <div class="stage-actions" style="margin-top: 20px; display: flex; gap: 10px;">
                     <button class="btn check-btn">Проверить</button>
-                    <button class="btn btn-clear"
-                            onclick="clearDropZone(this.closest('.stage-content'))">
-                        Очистить
-                    </button>
                 </div>
                 <div class="crossword-feedback"></div>
                 <div class="task-error hidden"></div>

@@ -12,15 +12,38 @@ templates = Jinja2Templates(directory="app/static/templates")
 router = APIRouter(tags=["api"], prefix="/api")
 
 
+from fastapi import HTTPException
+
 @router.post("/profile")
 def api_profile(
     data: StartQuest,
     request: Request,
     db: Session = Depends(get_db)
 ):
-    user = db.query(User).filter_by(email=data.email).first()
+    # ищем по email
+    user_by_email = db.query(User).filter(User.email == data.email).first()
+    # ищем по ФИО
+    user_by_name = db.query(User).filter(User.full_name == data.full_name).first()
 
-    if not user:
+    # ❌ email занят другим именем
+    if user_by_email and user_by_email.full_name != data.full_name:
+        raise HTTPException(
+            status_code=400,
+            detail="Этот логин уже используется другим пользователем"
+        )
+
+    # ❌ имя занято другим email
+    if user_by_name and user_by_name.email != data.email:
+        raise HTTPException(
+            status_code=400,
+            detail="Это имя уже занято другим пользователем"
+        )
+
+    # ✅ пользователь уже существует (логин)
+    if user_by_email:
+        user = user_by_email
+    else:
+        # ✅ регистрация
         user = User(
             full_name=data.full_name,
             email=data.email
@@ -29,23 +52,48 @@ def api_profile(
         db.commit()
         db.refresh(user)
 
-    # 🔥 СОХРАНЯЕМ В СЕССИЮ
+    # сохраняем в сессию
     request.session["user_id"] = user.id
     request.session["full_name"] = user.full_name
     request.session["email"] = user.email
 
-    return {"ok": True}
+    return {
+        "ok": True,
+        "user": {
+            "id": user.id,
+            "full_name": user.full_name,
+            "email": user.email
+        }
+    }
 
 @router.get("/profile", response_class=HTMLResponse)
-def profile_page(request: Request):
+def profile_page(request: Request,
+                 db: Session = Depends(get_db)):
+    user = db.query(User).filter_by(id=request.session["user_id"]).first()
+    if not user:
+        print("User not found")
+    else:
+        print("User found:", user.full_name)
+
     return templates.TemplateResponse(
         "profile.html",
         {
             "request": request,
-            "full_name": request.session.get("full_name"),
-            "email": request.session.get("email"),
         }
     )
+
+@router.get("/me")
+def get_profile(request: Request, db: Session = Depends(get_db)):
+    user = db.query(User).filter_by(id=request.session["user_id"]).first()
+    if not user:
+        return {"error": "User not found"}
+
+    return {
+        "full_name": user.full_name,
+        "email": user.email,
+        "rating": user.rating
+    }
+
 @router.get("/debug-session")
 def debug_session(request: Request):
     return dict(request.session)
@@ -223,10 +271,7 @@ async def user_progress(
     return {"stages": stages}
 
 @router.post("/logout")
-async def logout(
-    request: Request,
-    db: Session = Depends(get_db)
-):
+def logout(request: Request):
     request.session.clear()
     return {"ok": True}
 

@@ -52,7 +52,7 @@ export function initTaskWrapper(wrapper) {
     const timerEl = wrapper.querySelector('.start-timer');
     const cover = wrapper.querySelector('.task-cover');
     const content = wrapper.querySelector('.task-content');
-
+    
     // Раскрыть кнопку
 
     wrapper.querySelector('.start-task-btn').classList.remove('hidden');

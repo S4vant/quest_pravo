@@ -87,12 +87,123 @@ body {
 
 /* ===== TASK ===== */
 .task-cover {
-    display: flex;
+    display: grid;
+    grid-template-columns: 20% auto 20%;
+    grid-template-rows: 1fr auto 1fr;
+    gap: 20px;
     flex-direction: column;
     align-items: center;
     gap: 12px;
 }
+.task-hint-time,
+.task-hint-help,
+.task-hint-penalty,
+.task-hint-score {
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #dedede;
+    line-height: 1.3;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(2px);
+}
 
+.task-hint-time:hover,
+.task-hint-help:hover,
+.task-hint-penalty:hover,
+.task-hint-score:hover {
+    background: rgba(0, 0, 0, 0.07);
+    transform: translateY(-2px);
+}
+.task-hint-time::before {
+    content: '⏱';
+    display: block;
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.task-hint-penalty::before {
+    content: '❌';
+    display: block;
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.task-hint-help::before {
+    content: '💡';
+    display: block;
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.task-hint-score::before {
+    content: '⭐';
+    display: block;
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+.task-record {
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: rgba(44, 123, 229, 0.08);
+    font-size: 15px;
+    font-weight: 600;
+    color: #2c7be5;
+    letter-spacing: 0.2px;
+}
+
+.task-hint-time {
+    grid-column: 1;
+    grid-row: 1;
+    text-align: center;
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.task-hint-help {
+    font-size: 14px;
+    grid-column: 3;
+    grid-row: 2;
+    text-align: center;
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.task-hint-penalty {
+    grid-column: 3;
+    grid-row: 1;
+    text-align: center;
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.task-hint-score {
+    grid-column: 1;
+    grid-row: 2;
+    text-align: center;
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+.task-record {
+    grid-column: 2;
+    grid-row: 3;
+    text-align: center;
+    margin-top: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c7be5;
+}
+
+.start-task-btn {
+    padding: 14px 32px;
+    font-size: 16px;
+}
 .start-timer {
     font-size: 32px;
     font-weight: bold;
@@ -101,17 +212,6 @@ body {
 .hidden {
     display: none;
 }
-
-/* ===== BLOCKS ===== */
-/* .definition-drop {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    min-height: 100px;
-    padding: 15px;
-    border-radius: 8px;
-    background: #2c2c2c;
-} */
 /* ===== ЗОНА С БЛОКАМИ ===== */
 .definition-bank {
     display: flex;
@@ -123,7 +223,6 @@ body {
     border-radius: 8px;
     margin-bottom: 20px;
 }
-
 /* ===== ЗОНА ОТВЕТА ===== */
 .definition-drop {
     display: flex;
@@ -135,52 +234,38 @@ body {
     border: 2px dashed #0d6efd;
     border-radius: 8px;
 }
-
 .block {
-
     background: #3a3a3a;
     color: rgba(255, 255, 255, 0.9);
-
     padding: 10px 14px;
     border-radius: 10px;
-
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.45),
         inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-
     cursor: grab;
-
     white-space: normal;
     word-break: break-word;
-
     transition:
         opacity 2s ease,
         transform 2s cubic-bezier(.2,1.5,.5,1),
         box-shadow 2s ease;
 }
-
-
 .block:hover {
     border-color: #0d6efd;
     transform: translateY(-2px);
 }
-
 .block.correct {
     background: #0f5132;
     border-color: #10b981;
 }
-
 .block.incorrect {
     background: #6b0f1a;
     border-color: #ef4444;
 }
-
 .drop-zone.locked {
     opacity: 0.7;
     pointer-events: none;
 }
-
-
 /* ===== FEEDBACK ===== */
 .feedback {
     padding: 12px;
@@ -188,19 +273,16 @@ body {
     margin-top: 20px;
     display: none;
 }
-
 .feedback.success {
     background: #0f5132;
     color: #d1fae5;
     display: block;
 }
-
 .feedback.error {
     background: #6b0f1a;
     color: #fcd5d5;
     display: block;
 }
-
 /* ===== BUTTONS ===== */
 .btn {
     background: #0d6efd;
@@ -211,46 +293,42 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
 }
-
 .btn:hover:not(:disabled) {
     background: #084298;
     transform: translateY(-2px);
 }
-
 .btn-clear {
     background: #6b7280;
 }
-
 .btn-clear:hover {
     background: #4b5563;
 }
-
 .btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
-
 /* ===== КНОПКА НАЧАТЬ ЗАДАЧУ =====
     А так же краисвый таймер */
-
 .start-task-btn {
+    grid-column: 2;
+    grid-row: span 2;
     padding: 14px 36px;
-    font-size: 1.2rem;
+    font-size: 17px;
     font-weight: 600;
     border-radius: 14px;
+    background: linear-gradient(135deg, #2c7be5, #1a5fc7);
+    color: white;
     border: none;
+    box-shadow: 0 8px 20px rgba(44, 123, 229, 0.3);
     cursor: pointer;
-
-    background: linear-gradient(135deg, #4f8cff, #6a5cff);
-    color: #fff;
-
-    box-shadow: 0 10px 30px rgba(79, 140, 255, 0.35);
-
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease,
-        opacity 0.5s ease;
+    transition: all 0.2s ease;
 }
+
+.start-task-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(44, 123, 229, 0.4);
+}
+
 
 .start-task-btn:hover {
     transform: translateY(-2px) scale(1.03);
@@ -425,7 +503,27 @@ body {
 
     pointer-events: none;
 }
+/* Сообщение о результате */
+.task-result-overlay .result-message {
+    font-size: 1.2em;
+    margin-top: 15px;
+    transition: all 0.5s ease;
+}
 
+/* Спецстиль для первого прохождения */
+.task-result-overlay .result-message.first-time {
+    color: #28a745; /* зелёный */
+    font-weight: 700;
+    font-size: 1.4em;
+    animation: pulse 1s ease-in-out 2; /* пульсация два раза */
+}
+
+/* Пульсирующая анимация */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
 .result-card {
     background: linear-gradient(
         180deg,
@@ -823,6 +921,5 @@ body {
     pointer-events: auto;
     transform: translateY(-50%) translateX(0);
 }
-
 
 

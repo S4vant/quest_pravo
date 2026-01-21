@@ -112,7 +112,15 @@ export function resetQuestion(wrapper) {
         clearInterval(wrapper._timerInterval);
         wrapper._timerInterval = null;
     }
+    const hintBtn = wrapper.querySelector('.hint-btn');
+    const hintPopup = wrapper.querySelector('.hint-popup');
 
+    if (hintBtn && hintPopup) {
+        hintPopup.classList.remove('visible');
+        hintPopup.classList.add('hidden');
+        hintBtn.disabled = false;
+        hintBtn.style.opacity = '1';
+    }
     delete wrapper._startTime;
     delete wrapper._endTime;
     delete wrapper._timerInterval;

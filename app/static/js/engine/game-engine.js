@@ -49,14 +49,15 @@ export async function showResultOverlay(wrapper, { current, best, message }) {
     const currentEl = overlay.querySelector('.current-time');
     const bestEl = overlay.querySelector('.best-time');
     const deltaEl = overlay.querySelector('.delta-time');
+    const resultMsgEl = overlay.querySelector('.result-message');
 
     currentEl.textContent = formatTime(current);
 
-    
     if (best !== null && best !== undefined) {
+        // Уже было прохождение
         bestEl.textContent = formatTime(best);
-        console.log(best, "-", current);
         const diff = best - current;
+
         if (diff > 0) {
             deltaEl.textContent = `Лучше на ${formatTime(diff)}`;
             deltaEl.className = 'delta-time better';
@@ -65,14 +66,21 @@ export async function showResultOverlay(wrapper, { current, best, message }) {
             deltaEl.className = 'delta-time worse';
         } else {
             deltaEl.textContent = 'Повтор рекорда';
+            deltaEl.className = 'delta-time';
         }
+
+        if (!message) resultMsgEl.textContent = 'Вы прошли задание снова';
+        else resultMsgEl.textContent = message;
     } else {
+        // Первое прохождение
         bestEl.textContent = '—';
         deltaEl.textContent = '';
-    }
+        deltaEl.className = 'delta-time';
 
-    if (message) {
-        overlay.querySelector('.result-message').textContent = message;
+        resultMsgEl.textContent = message ?? 'Поздравляем! Вы прошли задание впервые!';
+        resultMsgEl.classList.add('first-time'); // можно добавить спец. стиль
+        // Здесь можно триггерить бонус
+        // giveReward(); // функция начисления награды
     }
 
     overlay.classList.remove('hidden');
@@ -91,4 +99,23 @@ export async function showFailOverlay(wrapper, reason) {
     });
 }
 
+export function fillTaskIntro(wrapper, meta) {
+    const map = {
+        time: 'Время на прохождение — 1 минута',
+        penalty: 'Неправильный ответ: +5 секунд',
+        help: 'Подсказка: +10 секунд',
+        score: 'Чем быстрее ответ — тем больше очков'
+    };
 
+    for (const [key, text] of Object.entries(map)) {
+        const el = wrapper.querySelector(`[data-hint="${key}"]`);
+        if (el) el.textContent = text;
+    }
+
+    const recordEl = wrapper.querySelector('[data-hint="record"]');
+    const best = progressStore.getBest(meta.stage, meta.question);
+
+    recordEl.textContent = best !== null
+        ? `Лучший результат: ${formatTime(best)}`
+        : 'Рекорд ещё не установлен';
+}

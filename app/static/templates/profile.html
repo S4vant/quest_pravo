@@ -8,52 +8,58 @@
 </head>
 <body>
 
+
+
+<div class="layout">
 <header class="main-header">
     <h1>🧠 Квест по трудовому праву</h1>
     <p>Профиль игрока и этапы прохождения</p>
 </header>
-
-<div class="layout">
-
     <!-- БОКОВАЯ ПАНЕЛЬ -->
     <aside class="sidebar">
-        <h3>🏆 Лидеры</h3>
+        <h3 class="sidebar-title">🏆 Лидеры</h3>
 
-        <table class="leaderboard">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Игрок</th>
-                    <th>Очки</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboard-body">
-                <tr>
-                    <td colspan="3">Загрузка...</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="leaderboard-wrapper">
+            <table class="leaderboard">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Игрок</th>
+                        <th>Очки</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <tr>
+                        <td colspan="3">Загрузка...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <button class="secondary-btn" onclick="history.back()">
-            ← Назад
+        <button class="logout-btn" onclick="logout()">
+            ⎋ Выйти
         </button>
-    </aside>
+    </aside>    
 
     <!-- ОСНОВНОЙ КОНТЕНТ -->
     <main class="game">
 
         <!-- ПРОФИЛЬ -->
-        <section class="card fade-in">
+        <section class="profile-card fade-in">
             <h2>Профиль игрока</h2>
 
             <div class="profile-info">
-                <p class="profile-name">{{ full_name }}</p>
-                <p class="profile-email">{{ email }}</p>
+                <p class="profile-name">--</p>
+                <p class="profile-email">--</p>
             </div>
 
             <button class="primary-btn" onclick="startAttempt()">
                 ▶ Продолжить квест
             </button>
+             <div class="profile-rating">
+            <span>🏅 Общий счёт:</span>
+            <strong id="profile-rating"></strong>
+        </div>
         </section>
 
         <!-- ЭТАПЫ -->
@@ -65,8 +71,12 @@
                 <span class="stage-num">1</span>
                 <div>
                     <h4>Трудовое право как отрасль права</h4>
-                    <p>Базовые понятия и принципы</p>
                 </div>
+                
+            </div>
+            <div class="score">
+                <span class="score-icon">⭐</span>
+                <span class="stage-score">0</span>
             </div>
 
             <div class="progress-wrapper">
@@ -74,9 +84,8 @@
                 <div class="progress">
                     <div id="progress-stage-1" class="progress-bar" style="width: 0%">0%</div>
                 </div>
+                <span class="stage-btn" onclick="startStage(1)">Перейти</span>
             </div>
-
-            <span class="stage-btn" onclick="startStage(1)">Перейти</span>
         </div>
 
         <!-- ЭТАП 2 -->
@@ -87,15 +96,17 @@
                     <h4>Трудовой договор</h4>
                 </div>
             </div>
-
+            <div class="score">
+                <span class="score-icon">⭐</span>
+                <span class="stage-score">0</span>
+            </div>
             <div class="progress-wrapper">
                 <label>Прогресс выполнения заданий:</label>
                 <div class="progress">
-                    <div id="progress-stage-2" class="progress-bar" style="width: 0%">0%</div>
+                    <div id="progress-stage-2" class="progress-bar" style="width: 0%">  0%</div>
                 </div>
+                <span class="stage-btn" onclick="startStage(2)">Перейти</span>
             </div>
-
-            <span class="stage-btn" onclick="startStage(2)">Перейти</span>
         </div>
 
         <!-- ЭТАП 3 -->
@@ -104,8 +115,11 @@
                 <span class="stage-num">3</span>
                 <div>
                     <h4>Дисциплина труда</h4>
-                    <p>Заключение и оформление</p>
                 </div>
+            </div>
+            <div class="score">
+                <span class="score-icon">⭐</span>
+                <span class="stage-score">0</span>
             </div>
 
             <div class="progress-wrapper">
@@ -113,9 +127,10 @@
                 <div class="progress">
                     <div id="progress-stage-3" class="progress-bar" style="width: 0%">0%</div>
                 </div>
+            <span class="stage-btn" onclick="startStage(3)">Перейти</span>
             </div>
 
-            <span class="stage-btn" onclick="startStage(3)">Перейти</span>
+            
         </div>
 
     </main>
