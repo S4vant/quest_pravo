@@ -188,8 +188,6 @@ body {
     font-size: 13px;
     font-weight: 600;
 }
-
-
 .task-record {
     grid-column: 2;
     grid-row: 3;
@@ -517,6 +515,12 @@ body {
     font-size: 1.4em;
     animation: pulse 1s ease-in-out 2; /* пульсация два раза */
 }
+.task-result-overlay .result-message.fail{
+    color: #ff3b3b;
+    font-weight: 700;
+    font-size: 1.4em;
+    animation: pulse 1s ease-in-out 2; /* пульсация два раза */
+}
 
 /* Пульсирующая анимация */
 @keyframes pulse {
@@ -571,6 +575,11 @@ body {
     margin-top: 12px;
     font-size: 14px;
     color: #334155;
+}
+
+.result-message .fail {
+    color: #821717;
+    font-weight: 700;
 }
 
 .result-card .btn {

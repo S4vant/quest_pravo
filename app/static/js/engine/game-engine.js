@@ -61,6 +61,7 @@ export async function showResultOverlay(wrapper, { current, best, message }) {
         if (diff > 0) {
             deltaEl.textContent = `Лучше на ${formatTime(diff)}`;
             deltaEl.className = 'delta-time better';
+
         } else if (diff < 0) {
             deltaEl.textContent = `Хуже на ${formatTime(Math.abs(diff))}`;
             deltaEl.className = 'delta-time worse';
@@ -71,7 +72,7 @@ export async function showResultOverlay(wrapper, { current, best, message }) {
 
         if (!message) resultMsgEl.textContent = 'Вы прошли задание снова';
         else resultMsgEl.textContent = message;
-    } else {
+    } else if (current < 60) {
         // Первое прохождение
         bestEl.textContent = '—';
         deltaEl.textContent = '';
@@ -82,7 +83,13 @@ export async function showResultOverlay(wrapper, { current, best, message }) {
         // Здесь можно триггерить бонус
         // giveReward(); // функция начисления награды
     }
-
+    else {
+        bestEl.textContent = '—';
+        deltaEl.textContent = '';
+        deltaEl.className = 'delta-time  worse';
+        resultMsgEl.classList.add('fail');
+        resultMsgEl.textContent = message ?? 'Время вышло. Попробуйте ещё раз.';
+    }
     overlay.classList.remove('hidden');
 }
 
