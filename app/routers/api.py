@@ -4,10 +4,10 @@ from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from ..app.schemas import StartQuest, AnswerData, QuestionResult, LeaderboardUser
-from ..app.db import get_db
-from ..app.models import User, Attempt, AnswerLog
-from ..app.service import update_user_rating
+from ..schemas import StartQuest, AnswerData, QuestionResult, LeaderboardUser
+from ..db import get_db
+from ..models import User, Attempt, AnswerLog
+from ..service import update_user_rating
 templates = Jinja2Templates(directory="app/static/templates")
 router = APIRouter(tags=["api"], prefix="/api")
 

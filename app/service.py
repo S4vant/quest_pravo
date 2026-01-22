@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends
-from ..app.db import get_db
+from .db import get_db
 from .models import User
 def calc_question_score(wasted_time: int) -> int:
     if wasted_time <= 0:

@@ -6,7 +6,7 @@ from fastapi.templating import Jinja2Templates
 from .routers.templates import router as templates
 from .routers.api import router as api
 from starlette.middleware.sessions import SessionMiddleware
-from .app.db import engine, Base
+from .db import engine, Base
 
 
 
