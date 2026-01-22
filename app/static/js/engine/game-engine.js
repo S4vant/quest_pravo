@@ -50,7 +50,8 @@ export async function showResultOverlay(wrapper, { current, best, message }) {
     const bestEl = overlay.querySelector('.best-time');
     const deltaEl = overlay.querySelector('.delta-time');
     const resultMsgEl = overlay.querySelector('.result-message');
-
+    resultMsgEl.classList.remove('first-time');
+    resultMsgEl.classList.remove('fail');
     currentEl.textContent = formatTime(current);
 
     if (best !== null && best !== undefined) {
@@ -61,6 +62,7 @@ export async function showResultOverlay(wrapper, { current, best, message }) {
         if (diff > 0) {
             deltaEl.textContent = `Лучше на ${formatTime(diff)}`;
             deltaEl.className = 'delta-time better';
+            progressStore.setBest(Number(wrapper.dataset.stage), Number(wrapper.dataset.question), current);
 
         } else if (diff < 0) {
             deltaEl.textContent = `Хуже на ${formatTime(Math.abs(diff))}`;
@@ -77,7 +79,7 @@ export async function showResultOverlay(wrapper, { current, best, message }) {
         bestEl.textContent = '—';
         deltaEl.textContent = '';
         deltaEl.className = 'delta-time';
-
+        progressStore.setBest(Number(wrapper.dataset.stage), Number(wrapper.dataset.question), current);
         resultMsgEl.textContent = message ?? 'Поздравляем! Вы прошли задание впервые!';
         resultMsgEl.classList.add('first-time'); // можно добавить спец. стиль
         // Здесь можно триггерить бонус
@@ -106,21 +108,22 @@ export async function showFailOverlay(wrapper, reason) {
     });
 }
 
-export function fillTaskIntro(wrapper, meta) {
+export function fillTaskIntro(wrapper) {
     const map = {
         time: 'Время на прохождение — 1 минута',
         penalty: 'Неправильный ответ: +5 секунд',
         help: 'Подсказка: +10 секунд',
         score: 'Чем быстрее ответ — тем больше очков'
     };
-
+    const stage = Number(wrapper.dataset.stage);
+    const question = Number(wrapper.dataset.question);
     for (const [key, text] of Object.entries(map)) {
         const el = wrapper.querySelector(`[data-hint="${key}"]`);
         if (el) el.textContent = text;
     }
 
     const recordEl = wrapper.querySelector('[data-hint="record"]');
-    const best = progressStore.getBest(meta.stage, meta.question);
+    const best = progressStore.getBest(stage, question);
 
     recordEl.textContent = best !== null
         ? `Лучший результат: ${formatTime(best)}`

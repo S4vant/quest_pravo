@@ -707,6 +707,7 @@ body {
 }
 
 .term-slot strong {
+    width: 67%;
     font-size: 14px;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.85);
@@ -715,6 +716,7 @@ body {
 /* ====== ПЛЕЙСХОЛДЕР ====== */
 
 .drop-placeholder {
+    width: 36%;
     font-size: 13px;
     color: rgba(255, 255, 255, 0.45);
     opacity: 1;
@@ -728,13 +730,16 @@ body {
     border-radius: 16px;
     padding: 16px;
 
-    display: flex;
     flex-wrap: wrap;
     gap: 12px;
 
     box-shadow:
         0 8px 22px rgba(0, 0, 0, 0.5),
         inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.situations-bank .block {
+    margin-bottom: 10px; 
 }
 
 /* ====== DRAG HOVER (по желанию, но красиво) ====== */
@@ -824,14 +829,14 @@ body {
 
 .selection-info .selected-count {
     font-weight: 600;
-    color: #57677d;
+    color: #9daec6;
 }
 
 .selection-info .selected-words {
     display: block;
     margin-top: 4px;
     font-style: italic;
-    color: #475569;
+    color: #bfd7f9;
 }
 
 /* --- Обратная связь --- */

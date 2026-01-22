@@ -1,6 +1,6 @@
 import { gameState } from './state.js';
 import { } from '../utils/utils.js';
-import { showFailOverlay} from './game-engine.js';
+import { showFailOverlay, fillTaskIntro} from './game-engine.js';
 export function startLiveTimer() {
     const timerEl = document.getElementById('task-timer');
     if (!timerEl) return;
@@ -59,6 +59,7 @@ export function initTaskWrapper(wrapper) {
     wrapper.querySelector('.start-task-btn').classList.remove('fade-out');
     wrapper.querySelector('.start-task-btn').disabled = false;
     wrapper.querySelector('.start-task-btn').style.display = 'block';
+    fillTaskIntro(wrapper);
     startBtn.addEventListener('click', () => {
         // анимация кнопки
         startBtn.classList.add('fade-out');

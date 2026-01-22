@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const stage = Number(wrapper.dataset.stage);
         const question = Number(wrapper.dataset.question);
-        fillTaskIntro(wrapper, { stage, question });
+        
 
         initTaskWrapper(wrapper);
         setupDragAndDrop();

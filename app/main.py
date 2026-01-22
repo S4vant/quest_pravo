@@ -28,6 +28,6 @@ Base.metadata.create_all(bind=engine)
 
 # --- Static и templates ---
 
-# app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 # templates = Jinja2Templates(directory="app/templates")
 
