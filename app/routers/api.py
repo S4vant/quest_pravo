@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from ..schemas import StartQuest, AnswerData, QuestionResult, LeaderboardUser
 from ..db import get_db
 from ..models import User, Attempt, AnswerLog
-from ..service import update_user_rating
+from ..service import update_user_rating, calc_question_score
 templates = Jinja2Templates(directory="app/static/templates")
 router = APIRouter(tags=["api"], prefix="/api")
 
@@ -209,14 +209,15 @@ async def log_answer(
         # Если оба правильные → оставляем минимальное время
         if is_correct and existing.is_correct:
             if answer_time < existing.wasted_time:
-                existing.wasted_time = answer_time
                 update_user_rating(
                     db,
                     attempt.user_id,
                     existing.wasted_time,# old_time
                     answer_time
                 )
+                existing.wasted_time = answer_time
                 db.commit()
+                
                 print("Updated best time!")
                 return {"saved": True}
             else:
@@ -252,22 +253,26 @@ async def user_progress(
     
     Attempt_id = request.session.get("attempt_id")
     attempd = db.query(Attempt).filter_by(id=Attempt_id).first()
-    
+    user = db.query(User).filter_by(id=attempd.user_id).first()
     # Получаем все ответы пользователя
     logs = db.query(AnswerLog).filter(AnswerLog.attempt_id == attempd.id).all()
-
+    # print(user.rating)
     stages_dict = {}
+    new_rating = 0
     for log in logs:
+        new_rating += calc_question_score(log.wasted_time)
         stages_dict.setdefault(log.stage_number, []).append({
             "q": log.question_number,
             "completed": log.is_correct,
             "wasted_time": log.wasted_time
         })
-
+    if user.rating < new_rating:
+        user.rating = new_rating
+        db.commit()
     stages = [{"stage": stage, "questions": qs} for stage, qs in stages_dict.items()]
-    print(stages)
-    data = request.session.get("user_id")
-    print(data)
+    # print(stages)
+    # data = request.session.get("user_id")
+    # print(data)
     return {"stages": stages}
 
 @router.post("/logout")

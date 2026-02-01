@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends
 from .db import get_db
 from .models import User
+
 def calc_question_score(wasted_time: int) -> int:
     if wasted_time <= 0:
         return 0
@@ -29,7 +30,6 @@ def update_user_rating(
         old_score = 0
 
     delta = new_score - old_score
-
     if delta > 0:
         print("Delta:", delta)
         user.rating += delta

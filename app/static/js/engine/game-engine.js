@@ -17,10 +17,10 @@ export function showRecordCelebration(oldTime, newTime) {
 
 export async function saveResult(isCorrect, stage, question, wastedTime) {
     try {
-        const prev = progressStore.getBest(stage, question);
-        const isBetter = prev == null || wastedTime < prev;
+        // const prev = progressStore.getBest(stage, question);
+        // const isBetter = prev == null || wastedTime < prev;
 
-        if (!isBetter) return;
+        // if (!isBetter) return;
 
         progressStore.setBest(stage, question, wastedTime);
 
